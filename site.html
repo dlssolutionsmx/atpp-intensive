@@ -96,4 +96,90 @@ renderProduct=function(finalize){
  product.classList.remove('hidden');if(finalize){downloadBtn.classList.remove('hidden');step(4)}dirty=true
 };
 </script>
+
+<style>
+.g2-pda-list{display:grid;gap:8px;margin:8px 0 14px}.g2-pda-option{display:grid;grid-template-columns:auto 48px 1fr;gap:9px;align-items:start;padding:10px;border:1px solid #dfe7ee;border-radius:8px}.g2-pda-option:hover{background:#f4f7fa}.g2-pda-option .badge{font-weight:700;text-align:center;border-radius:99px;padding:2px 7px}.g2-pda-option .badge.AC{background:#e8f6eb;color:#217b36}.g2-pda-option .badge.CN{background:#fff6dd;color:#8a6600}.g2-pda-option .badge.BC{background:#fdecec;color:#a12c2c}.g2-other{margin-top:8px}
+</style>
+<script>
+renderG2Links=function(){
+ const box=document.querySelector('#g2-links');if(!box)return;
+ if(!g2Order.length){box.innerHTML='<p class="session-note">Seleccionen al menos una problemática.</p>';return}
+ box.innerHTML=g2Order.map(id=>{let link=g2Links[id]||{fase:'',rows:[],local:'',other:''};if(!Array.isArray(link.rows))link.rows=Number.isInteger(link.row)&&link.row>=0?[link.row]:[];g2Links[id]=link;
+  if(g2Integration==='local')return `<article class="g2-link-card" data-link="${id}"><div class="g2-link-head"><span class="g2-code">${id}</span><strong>${g2Problems[id]}</strong></div><p>El codiseño local no requiere semáforo ni alineación rígida con PDA nacionales.</p><textarea data-local="${id}" placeholder="Contenido o PDA local acordado por el colectivo">${esc(link.local||'')}</textarea></article>`;
+  const phases=[...new Set(g2Matrix.map(r=>r.fase))];const candidates=link.fase?g2Matrix.map((r,i)=>({...r,index:i})).filter(r=>r.fase===link.fase):[];
+  return `<article class="g2-link-card" data-link="${id}"><div class="g2-link-head"><span class="g2-code">${id}</span><strong>${g2Problems[id]}</strong></div><label>Fase</label><select data-phase22="${id}"><option value="">Seleccionar fase</option>${phases.map(f=>`<option ${f===link.fase?'selected':''}>${f}</option>`).join('')}</select><label>PDA disponibles en la Fase</label>${link.fase?`<div class="g2-pda-list">${candidates.map(r=>`<label class="g2-pda-option"><input type="checkbox" data-row22="${id}" value="${r.index}" ${link.rows.includes(r.index)?'checked':''}><span class="badge ${r.matches[id]}">${r.matches[id]}</span><span><b>${esc(r.campo)}</b><br>${esc(r.pda)}</span></label>`).join('')}</div>`:'<p class="session-note">Seleccionen una Fase para mostrar todos sus PDA.</p>'}<label>Otro PDA de la misma Fase no incluido en la matriz</label><textarea class="g2-other" data-other22="${id}" placeholder="Opcional: registrar sin sustituir los PDA seleccionados">${esc(link.other||'')}</textarea></article>`
+ }).join('');
+ box.querySelectorAll('[data-phase22]').forEach(s=>s.addEventListener('change',()=>{const id=s.dataset.phase22;g2Links[id]={fase:s.value,rows:[],local:g2Links[id]?.local||'',other:g2Links[id]?.other||''};renderG2Links();renderProduct(false)}));
+ box.querySelectorAll('[data-row22]').forEach(c=>c.addEventListener('change',()=>{const id=c.dataset.row22;const value=+c.value;const rows=g2Links[id].rows||[];g2Links[id].rows=c.checked?[...new Set([...rows,value])]:rows.filter(v=>v!==value);renderProduct(false)}));
+ box.querySelectorAll('[data-other22]').forEach(t=>t.addEventListener('input',()=>{g2Links[t.dataset.other22].other=t.value;renderProduct(false)}));
+ box.querySelectorAll('[data-local]').forEach(t=>t.addEventListener('input',()=>{g2Links[t.dataset.local].local=t.value;renderProduct(false)}));
+};
+
+g2Records=function(){return g2Order.map(id=>{const link=g2Links[id]||{};const indexes=Array.isArray(link.rows)?link.rows:[];return {id,problem:g2Problems[id],fase:link.fase||'',rows:indexes.map(i=>g2Matrix[i]).filter(Boolean),local:link.local||'',other:link.other||''}})};
+
+collected=function(){if(!activeFlow||activeFlow.id!=='curricular')return baseCollected();return g2Records().map(r=>({q:`${r.id} · ${r.problem}`,a:g2Integration==='local'?(r.local||'Pendiente de acordar'):[...r.rows.map(x=>`${r.fase} | ${x.campo} | ${x.contenido} | PDA: ${x.pda} | Coincidencia: ${x.matches[r.id]} | Metodología: ${x.metodologia}`),r.other?`${r.fase} | Otro PDA registrado por el colectivo: ${r.other}`:''].filter(Boolean).join('\n')||'Pendiente de vincular'}))};
+
+renderProduct=function(finalize){
+ if(!activeFlow||activeFlow.id!=='curricular'){baseRenderProduct(finalize);return}
+ const records=g2Records();if(!records.length){product.classList.add('hidden');return}
+ const rows=records.flatMap(r=>{if(g2Integration==='local')return [`<tr><td><b>${r.id}</b><br>${esc(r.problem)}</td><td colspan="4">${esc(r.local||'Pendiente de acordar')}</td></tr>`];const selected=r.rows.map(x=>`<tr><td><b>${r.id}</b><br>${esc(r.problem)}</td><td>${esc(r.fase||'Pendiente')}</td><td>${esc(x.campo)}</td><td>${esc(x.pda)}</td><td><span class="g2-match ${x.matches[r.id]}">${x.matches[r.id]}</span></td></tr>`);if(r.other)selected.push(`<tr><td><b>${r.id}</b><br>${esc(r.problem)}</td><td>${esc(r.fase||'Pendiente')}</td><td>Registro del colectivo</td><td>${esc(r.other)}</td><td>—</td></tr>`);if(!selected.length)selected.push(`<tr><td><b>${r.id}</b><br>${esc(r.problem)}</td><td>${esc(r.fase||'Pendiente')}</td><td colspan="3">Pendiente de vincular</td></tr>`);return selected}).join('');
+ product.innerHTML=`<span class="eyebrow">Vista previa en vivo</span><h3>Mapa de Lectura de la Realidad-Codiseño</h3><table class="vp-table"><thead><tr><th>Problemática</th><th>Fase</th><th>Campo</th><th>PDA</th><th>Coincidencia</th></tr></thead><tbody>${rows}</tbody></table><p><strong>Integración:</strong> ${g2Integration==='local'?'Contenido local codiseñado':g2Integration==='multigrado'?'Multigrado':'Directa'}.</p>`;
+ product.classList.remove('hidden');if(finalize){downloadBtn.classList.remove('hidden');step(4)}dirty=true
+};
+</script>
+<script>
+const g3Flow=flows.find(flow=>flow.id==='priorizar');
+if(g3Flow){
+ g3Flow.summary='Seleccionen una o dos problemáticas institucionales, definan acciones viables y acuerden el seguimiento mediante un solo Comité de Planeación y Evaluación para todo el PMC.';
+ g3Flow.fields=['Prioridad institucional','Acciones viables','Comité único y seguimiento'];
+ g3Flow.prompts=[
+  {q:'¿Qué área institucional requiere prioridad?',mode:'multi',options:['Práctica docente y directiva','Organización y funcionamiento escolar','Trayectorias, asistencia y permanencia','Infraestructura, accesibilidad y entorno seguro'],detail:'Conserven solo una o dos prioridades respaldadas por evidencia.'},
+  {q:'¿Qué acciones están dentro del margen escolar?',mode:'multi',options:['Sistema escolar de alerta temprana','Flexibilización y acogida en el ingreso','Asambleas familiares y acuerdos de cuidado','Intercambio pedagógico entre docentes','Gestión de apoyo externo o interinstitucional'],detail:'Ajusten responsables, tiempos y alcance real.'},
+  {q:'¿Qué esquema de coordinación corresponde?',mode:'single',options:['Un solo Comité de Planeación y Evaluación para integrar la información y dar seguimiento a todo el PMC','Integración del Comité pendiente de ratificación por el colectivo'],detail:'No se forman comités por problemática. Registren o editen los integrantes del único Comité y la fecha del primer corte de seguimiento.'}
+ ];
+}
+</script>
+<style>
+.g3-committee{margin-top:18px;padding:18px;border:1px solid #cfe0d3;border-left:5px solid var(--green);border-radius:10px;background:#f8fbf9}.g3-committee h4{margin:0 0 6px;color:var(--blue)}.g3-member-list{display:grid;gap:8px;margin:12px 0}.g3-member-row{display:grid;grid-template-columns:1fr auto;gap:8px}.g3-member-row input,.g3-cut-date{width:100%;padding:11px;border:1px solid #cbd6df;border-radius:9px}.g3-remove{border:0;border-radius:9px;padding:0 13px;background:#eaf1f7;color:var(--blue);font-weight:700}.g3-add{margin-bottom:16px}@media(max-width:520px){.g3-member-row{grid-template-columns:1fr}.g3-remove{padding:9px}}
+</style>
+<script>
+let g3CommitteeState={members:[''],cutDate:''};
+const g3PreviousSelectFlow=selectFlow;
+selectFlow=function(id){
+ if(id==='priorizar')g3CommitteeState={members:[''],cutDate:''};
+ g3PreviousSelectFlow(id);
+};
+
+const g3PreviousShowQuestions=showQuestions;
+showQuestions=function(){
+ g3PreviousShowQuestions();
+ if(!activeFlow||activeFlow.id!=='priorizar')return;
+ const thirdPrompt=questionsBox.querySelector('[data-prompt="2"]');
+ if(!thirdPrompt)return;
+ const committee=document.createElement('section');
+ committee.className='g3-committee';
+ committee.innerHTML='<h4>Comité de Planeación y Evaluación del PMC</h4><p class="prefill-note">Existe un solo Comité para integrar la información y dar seguimiento a todo el PMC.</p><label class="detail-label">Integrantes</label><div class="g3-member-list"></div><button type="button" class="secondary g3-add">Agregar integrante</button><label class="detail-label" for="g3-first-cut">Fecha del primer corte</label><input id="g3-first-cut" class="g3-cut-date" type="date" value="'+esc(g3CommitteeState.cutDate)+'">';
+ thirdPrompt.appendChild(committee);
+
+ const memberList=committee.querySelector('.g3-member-list');
+ const renderMembers=()=>{
+  memberList.innerHTML=g3CommitteeState.members.map((member,index)=>'<div class="g3-member-row"><input type="text" data-g3-member="'+index+'" value="'+esc(member)+'" placeholder="Nombre del integrante"><button type="button" class="g3-remove" data-g3-remove="'+index+'">Quitar</button></div>').join('');
+  memberList.querySelectorAll('[data-g3-member]').forEach(input=>input.addEventListener('input',()=>{g3CommitteeState.members[+input.dataset.g3Member]=input.value;dirty=true;renderProduct(false)}));
+  memberList.querySelectorAll('[data-g3-remove]').forEach(button=>button.addEventListener('click',()=>{g3CommitteeState.members.splice(+button.dataset.g3Remove,1);if(!g3CommitteeState.members.length)g3CommitteeState.members.push('');renderMembers();dirty=true;renderProduct(false)}));
+ };
+ renderMembers();
+ committee.querySelector('.g3-add').addEventListener('click',()=>{g3CommitteeState.members.push('');renderMembers();dirty=true;renderProduct(false)});
+ committee.querySelector('.g3-cut-date').addEventListener('input',event=>{g3CommitteeState.cutDate=event.target.value;dirty=true;renderProduct(false)});
+};
+
+const g3PreviousCollected=collected;
+collected=function(){
+ const rows=g3PreviousCollected();
+ if(!activeFlow||activeFlow.id!=='priorizar'||rows.length<3)return rows;
+ const members=g3CommitteeState.members.map(member=>member.trim()).filter(Boolean);
+ const committeeDetails=['Integrantes del Comité único: '+(members.length?members.join(', '):'Pendiente de registrar'),'Fecha del primer corte: '+(g3CommitteeState.cutDate||'Pendiente de definir')];
+ rows[2]={q:rows[2].q,a:[rows[2].a,...committeeDetails].join('\n')};
+ return rows;
+};
+</script>
 </body></html>
