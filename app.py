@@ -33,6 +33,6 @@ if not SITE_FILE.exists():
 
 components.html(
     SITE_FILE.read_text(encoding="utf-8"),
-    height=1600,
+    height=900,
     scrolling=True,
 )
