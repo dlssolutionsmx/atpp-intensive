@@ -182,4 +182,77 @@ collected=function(){
  return rows;
 };
 </script>
+<style>
+.g2-diagnostic{margin:16px 0;padding:18px;border:1px solid #cfe0d3;border-left:5px solid var(--green);border-radius:10px;background:#f8fbf9}.g2-diagnostic h4{margin:0 0 6px;color:var(--blue)}.g2-parameter-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:14px}.g2-parameter{display:flex;gap:9px;align-items:flex-start;padding:10px;border:1px solid var(--line);border-radius:9px;background:#fff}.g2-parameter:has(input:checked){border-color:var(--green);background:#f3fbf5}.g2-consistency{margin:10px 0;padding:10px 12px;border-radius:9px;font-weight:700}.g2-consistency.full{background:#e8f6eb;color:#217b36}.g2-consistency.autonomy{background:#fff6dd;color:#8a6600}.g2-justification{width:100%;min-height:74px;margin-top:6px;padding:10px;border:1px solid #d8c57d;border-radius:9px}@media(max-width:760px){.g2-parameter-grid{grid-template-columns:1fr}}
+</style>
+<script>
+g2Matrix.splice(0,g2Matrix.length,...__G2_MATRIX_FROM_EXCEL__);
+
+const g2SocioParameters={
+ D_Instru_1:'Rezago de Aprendizaje (Lectoescritura o cálculo instrumental)',
+ D_Asist_2:'Inasistencia y Movilidad (Ausentismo o migración familiar estacional)',
+ D_Tecno_3:'Hiperconectividad (Abuso de pantallas, videojuegos y redes)',
+ D_Crian_4:'Crianza Violenta (Castigo físico o disciplina violenta familiar)',
+ D_Fam_5:'Desatención Familiar (Baja corresponsabilidad o tiempo limitado en el hogar)',
+ D_Terr_6:'Dispersión Geográfica (Caminos inseguros o dificultades de traslado)',
+ D_Ident_7:'Erosión Cultural (Desuso de lenguas originarias o saberes tradicionales)',
+ D_Salud_8:'Vulnerabilidad Alimentaria (Malnutrición o consumo de ultraprocesados)',
+ D_Riesg_9:'Vulnerabilidad Social y Adicciones (Exposición a sustancias o violencia en el entorno)',
+ D_Entor_10:'Precariedad de Servicios (Falta de agua potable, basura o contaminación)'
+};
+const g2ProblemRequirements={
+ P1:{all:['D_Instru_1'],any:['D_Fam_5','D_Asist_2']},P2:{all:['D_Instru_1'],any:['D_Fam_5','D_Asist_2']},P3:{all:['D_Instru_1','D_Fam_5']},P4:{all:['D_Ident_7','D_Instru_1']},P5:{all:['D_Asist_2','D_Fam_5']},P6:{all:['D_Tecno_3'],any:['D_Fam_5','D_Crian_4']},P7:{all:['D_Crian_4'],any:['D_Fam_5','D_Instru_1']},P8:{all:['D_Asist_2','D_Terr_6']},P9:{all:['D_Fam_5','D_Asist_2']},P10:{all:['D_Asist_2'],any:['D_Terr_6','D_Fam_5']},P11:{all:['D_Tecno_3'],any:['D_Fam_5','D_Crian_4']},P12:{all:['D_Salud_8'],any:['D_Fam_5','D_Entor_10']},P13:{all:['D_Riesg_9'],any:['D_Fam_5','D_Crian_4']},P14:{all:['D_Ident_7'],any:['D_Fam_5','D_Crian_4']},P15:{all:['D_Entor_10'],any:['D_Asist_2','D_Terr_6']},P16:{all:['D_Entor_10','D_Terr_6']},P17:{all:['D_Ident_7','D_Fam_5']}
+};
+let g2SocioSelected=new Set(),g2SchoolJustifications={};
+function g2HasFullMatch(id){const rule=g2ProblemRequirements[id]||{all:[]};return (rule.all||[]).every(code=>g2SocioSelected.has(code))&&(!(rule.any||[]).length||(rule.any||[]).some(code=>g2SocioSelected.has(code)))}
+function g2MatchLabel(id){return g2HasFullMatch(id)?'🟢 Coincidencia Plena':'🟡 Coincidencia por Autonomía'}
+
+const g2SocioPreviousSelectFlow=selectFlow;
+selectFlow=function(id){if(id==='curricular'){g2SocioSelected=new Set();g2SchoolJustifications={}}g2SocioPreviousSelectFlow(id)};
+
+const g2SocioPreviousShowQuestions=showQuestions;
+showQuestions=function(){
+ g2SocioPreviousShowQuestions();
+ if(!activeFlow||activeFlow.id!=='curricular')return;
+ const problemBlock=questionsBox.querySelector('[data-g2problem]')?.closest('.question-item');if(!problemBlock)return;
+ const panel=document.createElement('section');panel.className='g2-diagnostic';
+ panel.innerHTML='<h4>Diagnóstico Socioeducativo</h4><p class="prefill-note">Marquen las condiciones registradas por el colectivo antes de seleccionar problemáticas para el Codiseño.</p><div class="g2-parameter-grid">'+Object.entries(g2SocioParameters).map(([code,label])=>'<label class="g2-parameter"><input type="checkbox" data-g2-parameter="'+code+'" '+(g2SocioSelected.has(code)?'checked':'')+'><span><b>'+code+'</b><br>'+label+'</span></label>').join('')+'</div>';
+ problemBlock.before(panel);
+ panel.querySelectorAll('[data-g2-parameter]').forEach(input=>input.addEventListener('change',()=>{input.checked?g2SocioSelected.add(input.dataset.g2Parameter):g2SocioSelected.delete(input.dataset.g2Parameter);renderG2Links();renderProduct(false);dirty=true}));
+};
+
+const g2SocioPreviousRenderLinks=renderG2Links;
+renderG2Links=function(){
+ g2SocioPreviousRenderLinks();
+ if(!activeFlow||activeFlow.id!=='curricular')return;
+ document.querySelectorAll('#g2-links [data-link]').forEach(card=>{const id=card.dataset.link,full=g2HasFullMatch(id),head=card.querySelector('.g2-link-head');if(!head)return;
+  const status=document.createElement('div');status.className='g2-consistency '+(full?'full':'autonomy');status.textContent=g2MatchLabel(id);head.after(status);
+  if(!full){const label=document.createElement('label');label.textContent='Sustente brevemente por qué esta problemática es prioritaria para su colectivo a pesar de las condiciones de su diagnóstico';const area=document.createElement('textarea');area.className='g2-justification';area.value=g2SchoolJustifications[id]||'';area.placeholder='Justificación escolar';area.addEventListener('input',()=>{g2SchoolJustifications[id]=area.value;renderProduct(false);dirty=true});status.after(label,area)}
+  card.querySelectorAll('[data-row22="'+id+'"] span:last-child').forEach(span=>{if(!span.textContent.trim().endsWith('('+id.slice(1)+')'))span.append(' ('+id.slice(1)+')')});
+ });
+};
+
+const g2SocioPreviousCollected=collected;
+collected=function(){
+ if(!activeFlow||activeFlow.id!=='curricular')return g2SocioPreviousCollected();
+ return g2Records().map(record=>{const full=g2HasFullMatch(record.id),justification=full?'No requerida':(g2SchoolJustifications[record.id]?.trim()||'Pendiente de sustentar');let answer;
+  if(g2Integration==='local')answer=record.local||'Pendiente de acordar';
+  else answer=[...record.rows.map(row=>record.fase+' | '+row.campo+' | '+row.contenido+' | PDA: '+row.pda+' ('+record.id.slice(1)+') | Metodología: '+row.metodologia)].join('\n')||'Pendiente de vincular';
+  return {q:record.id+' · '+record.problem,a:answer+'\n'+g2MatchLabel(record.id)+'\nJustificación escolar: '+justification}
+ });
+};
+
+const g2SocioPreviousRenderProduct=renderProduct;
+renderProduct=function(finalize){
+ if(!activeFlow||activeFlow.id!=='curricular'){g2SocioPreviousRenderProduct(finalize);return}
+ const records=g2Records();if(!records.length){product.classList.add('hidden');return}
+ const rows=records.flatMap(record=>{const full=g2HasFullMatch(record.id),status='<span class="g2-match '+(full?'AC':'CN')+'">'+g2MatchLabel(record.id)+'</span>',justification=full?'No requerida':(g2SchoolJustifications[record.id]?.trim()||'Pendiente de sustentar');
+  if(g2Integration==='local')return ['<tr><td><b>'+record.id+'</b><br>'+esc(record.problem)+'</td><td colspan="4">'+esc(record.local||'Pendiente de acordar')+'</td><td>'+status+'</td><td>'+esc(justification)+'</td></tr>'];
+  const selected=record.rows.map(row=>'<tr><td><b>'+record.id+'</b><br>'+esc(record.problem)+'</td><td>'+esc(record.fase||'Pendiente')+'</td><td>'+esc(row.campo)+'</td><td>'+esc(row.contenido)+'</td><td>'+esc(row.pda)+' ('+record.id.slice(1)+')</td><td>'+status+'</td><td>'+esc(justification)+'</td></tr>');
+  if(!selected.length)selected.push('<tr><td><b>'+record.id+'</b><br>'+esc(record.problem)+'</td><td>'+esc(record.fase||'Pendiente')+'</td><td colspan="3">Pendiente de vincular</td><td>'+status+'</td><td>'+esc(justification)+'</td></tr>');return selected
+ }).join('');
+ product.innerHTML='<span class="eyebrow">Vista previa en vivo</span><h3>Cuadro de Doble Entrada · Lectura de la Realidad-Codiseño</h3><table class="vp-table"><thead><tr><th>Problemática</th><th>Fase</th><th>Campo</th><th>Contenido Nacional</th><th>PDA</th><th>Coincidencia</th><th>Justificación escolar</th></tr></thead><tbody>'+rows+'</tbody></table><p><strong>Integración:</strong> '+(g2Integration==='local'?'Contenido local codiseñado':g2Integration==='multigrado'?'Multigrado':'Directa')+'.</p>';
+ product.classList.remove('hidden');if(finalize){downloadBtn.classList.remove('hidden');step(4)}dirty=true
+};
+</script>
 </body></html>
