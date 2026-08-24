@@ -330,4 +330,31 @@ function hydrateContinuity(text){
 }
 continuityPanel.querySelector('#ct-upload').addEventListener('change',event=>{const file=event.target.files?.[0];if(!file)return;const reader=new FileReader();reader.onload=()=>hydrateContinuity(String(reader.result||''));reader.onerror=()=>continuityPanel.querySelector('#ct-status').textContent='No fue posible leer el archivo TXT.';reader.readAsText(file,'UTF-8')});
 </script>
+<style>
+.g4-eia-panel{margin:16px 0;padding:18px;border:1px solid #c9d9e7;border-left:5px solid var(--blue);border-radius:10px;background:#f8fbfe}.g4-eia-panel h4{margin:0 0 6px;color:var(--blue)}.g4-eia-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:14px 0}.g4-eia-controls label{font-size:13px;font-weight:700;color:var(--blue)}.g4-eia-controls select{width:100%;margin-top:5px;padding:10px;border:1px solid #cbd6df;border-radius:8px;background:#fff}.g4-rule-box{padding:14px;border-radius:9px;background:#eaf1f7;color:var(--blue)}.g4-rule-box.warning{background:#fff1f1;color:#9b2424}.g4-rule-box ul{margin:8px 0 0;padding-left:20px}@media(max-width:760px){.g4-eia-controls{grid-template-columns:1fr}}
+</style>
+<script>
+let g4DiagnosticState={service:'REGULAR',phase:'Fase 3',usesEia:false};
+function g4SelectedStrategy(){const item=questionsBox.querySelector('[data-prompt="0"]');return item?.querySelector('input:checked')?.value||''}
+function g4RenderRules(panel){
+ const strategy=g4SelectedStrategy();g4DiagnosticState.usesEia=strategy==='Ejercicios Integradores del Aprendizaje'||strategy==='Combinación contextualizada de ambas';const box=panel.querySelector('.g4-rule-box');
+ if(!g4DiagnosticState.usesEia){box.className='g4-rule-box';box.innerHTML='<strong>Diagnóstico situado o pendiente.</strong><p>No se descuenta tiempo EIA. El colectivo define instrumentos y temporalidad contextualizados.</p>';return}
+ if(g4DiagnosticState.service==='CONAFE'){box.className='g4-rule-box warning';box.innerHTML='<strong>EIA no aplicable para CONAFE.</strong><p>El servicio está excluido de la aplicación nacional. Debe utilizarse un diagnóstico situado local.</p>';return}
+ const alternative=g4DiagnosticState.phase==='Fase 6'?'Alternativa A impresa o Alternativa B digital/proyectada.':'Únicamente Alternativa A mediante folleto impreso.';box.className='g4-rule-box';box.innerHTML='<strong>Reglas EIA aplicables</strong><ul><li>Disponibles a partir del 24 de agosto de 2026.</li><li>Dos ejercicios en dos sesiones distribuidas en dos días hábiles.</li><li>'+alternative+'</li><li>El docente entrega el registro XLS al Director dentro de cuatro días hábiles.</li><li>Periodo operativo institucional: 31 de agosto al 18 de septiembre para aplicación, valoración cualitativa y envío unificado al SiRVER.</li><li>Durante ese periodo las clases y proyectos continúan en paralelo; solo se descuentan dos días reales.</li></ul>';
+}
+const g4PreviousSelectFlow=selectFlow;
+selectFlow=function(id){if(id==='diagnostico')g4DiagnosticState={service:'REGULAR',phase:continuityState.context.fase||'Fase 3',usesEia:false};g4PreviousSelectFlow(id)};
+const g4PreviousShowQuestions=showQuestions;
+showQuestions=function(){
+ g4PreviousShowQuestions();if(!activeFlow||activeFlow.id!=='diagnostico')return;const first=questionsBox.querySelector('[data-prompt="0"]');if(!first)return;
+ const panel=document.createElement('section');panel.className='g4-eia-panel';panel.innerHTML='<h4>Soporte técnico de los EIA</h4><p class="prefill-note">Las reglas se activan únicamente cuando el colectivo selecciona EIA o combinación contextualizada.</p><div class="g4-eia-controls"><label>Servicio educativo<select id="g4-service"><option value="REGULAR" '+(g4DiagnosticState.service==='REGULAR'?'selected':'')+'>Escuela regular</option><option value="CONAFE" '+(g4DiagnosticState.service==='CONAFE'?'selected':'')+'>Servicio CONAFE</option></select></label><label>Fase educativa<select id="g4-phase">'+['Fase 2','Fase 3','Fase 4','Fase 5','Fase 6'].map(f=>'<option '+(g4DiagnosticState.phase===f?'selected':'')+'>'+f+'</option>').join('')+'</select></label></div><div class="g4-rule-box"></div>';first.appendChild(panel);
+ first.querySelectorAll('input').forEach(input=>input.addEventListener('change',()=>{g4RenderRules(panel);renderProduct(false)}));panel.querySelector('#g4-service').addEventListener('change',event=>{g4DiagnosticState.service=event.target.value;g4RenderRules(panel);renderProduct(false)});panel.querySelector('#g4-phase').addEventListener('change',event=>{g4DiagnosticState.phase=event.target.value;g4RenderRules(panel);renderProduct(false)});g4RenderRules(panel)
+};
+const g4PreviousCollected=collected;
+collected=function(){const rows=g4PreviousCollected();if(!activeFlow||activeFlow.id!=='diagnostico'||!rows.length)return rows;if(!g4DiagnosticState.usesEia)return rows;const support=g4DiagnosticState.service==='CONAFE'?'Servicio CONAFE: EIA excluido; corresponde diagnóstico situado local.':'Fase: '+g4DiagnosticState.phase+'. Aplicación EIA: 2 ejercicios, 2 sesiones, 2 días hábiles. Modalidad: '+(g4DiagnosticState.phase==='Fase 6'?'Alternativa A impresa o B digital/proyectada':'solo Alternativa A impresa')+'. Entrega docente al Director: 4 días hábiles. Periodo operativo hasta 18/09/2026 con clases paralelas.';rows[0]={q:rows[0].q,a:rows[0].a+'\n'+support};return rows};
+const g4PreviousBuildContinuityTxt=buildContinuityTxt;
+buildContinuityTxt=function(){const base=g4PreviousBuildContinuityTxt(),extra='SERVICIO_EDUCATIVO_G4: '+g4DiagnosticState.service+'\nFASE_EIA: '+g4DiagnosticState.phase+'\nDIAS_REALES_APLICACION_EIA: '+(g4DiagnosticState.usesEia?'2':'0')+'\nPERIODO_OPERATIVO_EIA: '+(g4DiagnosticState.usesEia?'31-08-2026 AL 18-09-2026; CLASES CONTINÚAN EN PARALELO':'NO APLICA');return base.replace('\n\n[G5. CALENDARIO', '\n'+extra+'\n\n[G5. CALENDARIO')};
+const g4PreviousHydrate=hydrateContinuity;
+hydrateContinuity=function(text){const service=ctLine(text,'SERVICIO_EDUCATIVO_G4'),phase=ctLine(text,'FASE_EIA'),days=ctLine(text,'DIAS_REALES_APLICACION_EIA');if(service)g4DiagnosticState.service=service;if(phase&&phase!=='PENDIENTE')g4DiagnosticState.phase=phase;g4DiagnosticState.usesEia=days==='2';g4PreviousHydrate(text)};
+</script>
 </body></html>
