@@ -255,4 +255,45 @@ renderProduct=function(finalize){
  product.classList.remove('hidden');if(finalize){downloadBtn.classList.remove('hidden');step(4)}dirty=true
 };
 </script>
+<style>
+.g3-solutions{margin:18px 0;padding:18px;border:1px solid #d8cba5;border-left:5px solid #c69a42;border-radius:10px;background:#fffdf7}.g3-solutions h4{margin:0 0 6px;color:var(--blue)}.g3-problem-select{width:100%;margin:12px 0 16px;padding:11px;border:1px solid #cbd6df;border-radius:9px}.g3-solution-list{display:grid;gap:10px}.g3-solution-card{display:grid;grid-template-columns:auto 1fr;gap:10px;padding:14px;border:1px solid var(--line);border-radius:10px;background:#fff}.g3-solution-card:has(input:checked){border-color:var(--green);background:#f3fbf5}.g3-solution-card input{margin-top:5px;accent-color:var(--green)}.g3-solution-head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px}.g3-score{padding:3px 9px;border-radius:99px;background:#e8f6eb;color:#217b36;font-weight:700}.g3-solution-meta{margin:7px 0;color:#51606d;font-size:13px}.g3-solution-analysis{margin:0;font-size:13px}
+</style>
+<script>
+const g3Solutions=__G3_SOLUTIONS_FROM_EXCEL__;
+let g3SolutionState={problemId:'',solutionKey:''};
+
+const g3SolutionsPreviousSelectFlow=selectFlow;
+selectFlow=function(id){
+ if(id==='priorizar')g3SolutionState={problemId:g2Order[0]||'',solutionKey:''};
+ g3SolutionsPreviousSelectFlow(id);
+};
+
+function g3SelectedSolution(){return g3Solutions.find(item=>item.id_problema===g3SolutionState.problemId&&(item.id_problema+'-'+item.id_solucion)===g3SolutionState.solutionKey)||null}
+function renderG3Solutions(panel){
+ const list=panel.querySelector('.g3-solution-list');if(!list)return;
+ if(!g3SolutionState.problemId){list.innerHTML='<p class="session-note">Seleccionen una problemática para consultar sus cinco soluciones.</p>';return}
+ const options=g3Solutions.filter(item=>item.id_problema===g3SolutionState.problemId);
+ list.innerHTML=options.map(item=>{const key=item.id_problema+'-'+item.id_solucion;return '<label class="g3-solution-card"><input type="radio" name="g3-solution" value="'+key+'" '+(g3SolutionState.solutionKey===key?'checked':'')+'><span><span class="g3-solution-head"><b>'+item.id_solucion+' · '+esc(item.solucion_propuesta)+'</b><span class="g3-score">Viabilidad '+item.puntaje_viabilidad+'/5</span></span><span class="g3-solution-meta">Ámbito: '+esc(item.ambito_pmc)+' · Costo: '+esc(item.costo_financiero)+' · Comunidad: '+esc(item.involucramiento_comunidad)+' · Tiempo: '+esc(item.tiempo_estimado)+'</span><p class="g3-solution-analysis">'+esc(item.analisis_contextualizado)+'</p></span></label>'}).join('');
+ list.querySelectorAll('[name="g3-solution"]').forEach(input=>input.addEventListener('change',()=>{g3SolutionState.solutionKey=input.value;dirty=true;renderProduct(false)}));
+}
+
+const g3SolutionsPreviousShowQuestions=showQuestions;
+showQuestions=function(){
+ g3SolutionsPreviousShowQuestions();
+ if(!activeFlow||activeFlow.id!=='priorizar')return;
+ const secondPrompt=questionsBox.querySelector('[data-prompt="1"]');if(!secondPrompt)return;
+ const panel=document.createElement('section');panel.className='g3-solutions';
+ panel.innerHTML='<h4>Matriz de Soluciones del PMC</h4><p class="prefill-note">Consulten las cinco alternativas editoriales y seleccionen la que el colectivo considere viable. El puntaje no se recalcula.</p><label class="detail-label" for="g3-problem-select">Problemática del Catálogo Máster</label><select id="g3-problem-select" class="g3-problem-select"><option value="">Seleccionar problemática</option>'+Object.entries(g2Problems).map(([id,label])=>'<option value="'+id+'" '+(g3SolutionState.problemId===id?'selected':'')+'>'+id+' · '+esc(label)+'</option>').join('')+'</select><div class="g3-solution-list"></div>';
+ secondPrompt.appendChild(panel);renderG3Solutions(panel);
+ panel.querySelector('.g3-problem-select').addEventListener('change',event=>{g3SolutionState.problemId=event.target.value;g3SolutionState.solutionKey='';renderG3Solutions(panel);dirty=true;renderProduct(false)});
+};
+
+const g3SolutionsPreviousCollected=collected;
+collected=function(){
+ const rows=g3SolutionsPreviousCollected();if(!activeFlow||activeFlow.id!=='priorizar'||rows.length<2)return rows;
+ const solution=g3SelectedSolution();if(!solution)return rows;
+ const detail=['Solución PMC: '+solution.id_problema+'-'+solution.id_solucion+' · '+solution.solucion_propuesta,'Ámbito: '+solution.ambito_pmc,'Costo financiero: '+solution.costo_financiero,'Involucramiento comunitario: '+solution.involucramiento_comunidad,'Tiempo estimado: '+solution.tiempo_estimado,'Puntaje editorial de viabilidad: '+solution.puntaje_viabilidad+'/5','Análisis contextualizado: '+solution.analisis_contextualizado].join('\n');
+ rows[1]={q:rows[1].q,a:[rows[1].a,detail].join('\n')};return rows
+};
+</script>
 </body></html>

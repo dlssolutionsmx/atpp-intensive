@@ -16,6 +16,7 @@ st.set_page_config(
 ROOT = Path(__file__).resolve().parent
 SITE_FILE = ROOT / "site.html"
 MATRIX_FILE = ROOT / "matriz-pda-problemas-v2.xlsx"
+SOLUTIONS_FILE = ROOT / "matriz-soluciones-pmc.xlsx"
 
 
 @st.cache_data
@@ -53,6 +54,39 @@ def cargar_matriz_curricular() -> list[dict]:
         )
     return records
 
+
+@st.cache_data
+def cargar_matriz_soluciones() -> list[dict]:
+    """Carga las 85 soluciones editoriales del PMC sin recalcular su puntaje."""
+    df = pd.read_excel(SOLUTIONS_FILE, sheet_name="Matriz de Soluciones")
+    if df.shape[1] < 10:
+        raise ValueError("La matriz de soluciones no contiene las 10 columnas esperadas.")
+
+    df = df.iloc[:, :10].copy()
+    df.columns = [
+        "id_problema",
+        "problema_master",
+        "ambito_pmc",
+        "id_solucion",
+        "solucion_propuesta",
+        "costo_financiero",
+        "involucramiento_comunidad",
+        "tiempo_estimado",
+        "puntaje_viabilidad",
+        "analisis_contextualizado",
+    ]
+    if len(df) != 85 or df.isna().any().any():
+        raise ValueError("La matriz de soluciones debe contener 85 registros completos.")
+
+    counts = df.groupby("id_problema").size()
+    if len(counts) != 17 or not counts.eq(5).all():
+        raise ValueError("Cada problemática P1-P17 debe contener cinco soluciones.")
+
+    records = df.to_dict(orient="records")
+    for record in records:
+        record["puntaje_viabilidad"] = int(record["puntaje_viabilidad"])
+    return records
+
 st.markdown(
     """
     <style>
@@ -74,13 +108,20 @@ if not MATRIX_FILE.exists():
     st.error("No se encontró la matriz curricular: matriz-pda-problemas-v2.xlsx")
     st.stop()
 
+if not SOLUTIONS_FILE.exists():
+    st.error("No se encontró la matriz del PMC: matriz-soluciones-pmc.xlsx")
+    st.stop()
+
 try:
     site_html = SITE_FILE.read_text(encoding="utf-8").replace(
         "__G2_MATRIX_FROM_EXCEL__",
         json.dumps(cargar_matriz_curricular(), ensure_ascii=False),
+    ).replace(
+        "__G3_SOLUTIONS_FROM_EXCEL__",
+        json.dumps(cargar_matriz_soluciones(), ensure_ascii=False),
     )
 except Exception as exc:
-    st.error(f"No fue posible cargar la matriz curricular: {exc}")
+    st.error(f"No fue posible cargar las matrices de trabajo: {exc}")
     st.stop()
 
 components.html(
