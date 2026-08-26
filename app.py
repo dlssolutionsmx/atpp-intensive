@@ -1,4 +1,5 @@
 from pathlib import Path
+import base64
 import json
 
 import pandas as pd
@@ -17,6 +18,8 @@ ROOT = Path(__file__).resolve().parent
 SITE_FILE = ROOT / "site.html"
 MATRIX_FILE = ROOT / "matriz-pda-problemas-v2.xlsx"
 SOLUTIONS_FILE = ROOT / "matriz-soluciones-pmc.xlsx"
+LINKS_FILE = ROOT / "objeto_tablas_enlaces.json"
+CHALKBOARD_FILE = ROOT / "pizarron_transparente.png"
 
 
 @st.cache_data
@@ -112,6 +115,10 @@ if not SOLUTIONS_FILE.exists():
     st.error("No se encontró la matriz del PMC: matriz-soluciones-pmc.xlsx")
     st.stop()
 
+if not LINKS_FILE.exists() or not CHALKBOARD_FILE.exists():
+    st.error("No se encontraron los recursos del pizarrón de orientaciones.")
+    st.stop()
+
 try:
     site_html = SITE_FILE.read_text(encoding="utf-8").replace(
         "__G2_MATRIX_FROM_EXCEL__",
@@ -119,6 +126,12 @@ try:
     ).replace(
         "__G3_SOLUTIONS_FROM_EXCEL__",
         json.dumps(cargar_matriz_soluciones(), ensure_ascii=False),
+    ).replace(
+        "__ORIENTATION_LINKS_JSON__",
+        LINKS_FILE.read_text(encoding="utf-8"),
+    ).replace(
+        "__CHALKBOARD_DATA_URI__",
+        "data:image/png;base64," + base64.b64encode(CHALKBOARD_FILE.read_bytes()).decode("ascii"),
     )
 except Exception as exc:
     st.error(f"No fue posible cargar las matrices de trabajo: {exc}")

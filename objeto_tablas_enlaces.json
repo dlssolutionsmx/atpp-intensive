@@ -1,0 +1,214 @@
+{
+  "fuente": {
+    "hoja": "En el mismo modelo de tabla dame los nmbres de la...",
+    "rango": "A1:D30",
+    "url_hoja": "https://docs.google.com/spreadsheets/d/1ojR8y9j_dsva8XE1RlRkcJ3iG00WGIs5BTqrfWCDt8Q/edit?gid=1802446501#gid=1802446501&range=A1:D30"
+  },
+  "tablas": [
+    {
+      "id": "LSTA_DESPLEGABLE_1",
+      "encabezados": {
+        "nombre": "LSTA_DESPLEGABLE_1",
+        "accion": "ABRE",
+        "nombre_desplegado": "NOMBRE_DESPLEGADO",
+        "url": "URL"
+      },
+      "filas": [
+        {
+          "fila_hoja": 2,
+          "nombre": "Orientaciones para la Fase Intensiva del CTE",
+          "accion": "LISTA_DESPLEGABLE_2",
+          "nombre_desplegado": "LISTA_COMPLETA",
+          "url": "N/A"
+        },
+        {
+          "fila_hoja": 3,
+          "nombre": "El impacto de los Dispositivos Digitales en las Infancias y Juventudes",
+          "accion": "LISTA_DESPLEGABLE_3",
+          "nombre_desplegado": "LISTA_COMPLETA",
+          "url": "N/A"
+        },
+        {
+          "fila_hoja": 4,
+          "nombre": "Desaparición de la USICAMM",
+          "accion": "VIDEO",
+          "nombre_desplegado": "Video. Compromiso Presidencial número 27: Desaparece la USICAMM. Nuevo sistema de contratación y promoción de maestros",
+          "url": "https://gestion.cte.sep.gob.mx/insumos/docs/videos/USICAMM_VF.mp4?1787767366677"
+        },
+        {
+          "fila_hoja": 5,
+          "nombre": "Pizarron de Noticias",
+          "accion": "LISTA_DESPLEGABLE_4",
+          "nombre_desplegado": "LISTA_COMPLETA",
+          "url": "N/A"
+        },
+        {
+          "fila_hoja": 6,
+          "nombre": "Video del Secretario",
+          "accion": "VIDEO",
+          "nombre_desplegado": "Mensaje de la Fase Intensiva del Consejo Técnico Escolar 2026-2027 (Secretaría de Educación Pública)",
+          "url": "https://www.youtube.com/watch?v=VtA2NSWgUeA"
+        }
+      ]
+    },
+    {
+      "id": "LISTA_DESPLEGABLE_2",
+      "encabezados": {
+        "nombre": "LISTA_DESPLEGABLE_2",
+        "accion": "ABRE",
+        "nombre_desplegado": "NOMBRE_DESPLEGADO",
+        "url": "URL"
+      },
+      "filas": [
+        {
+          "fila_hoja": 9,
+          "nombre": "Orientaciones para la Preparación de la Fase Intensiva del Consejo Técnico Escolar. Directivos y Supervisores. Educación Básica",
+          "accion": "PDF",
+          "nombre_desplegado": "MISMO_NOMBRE",
+          "url": "https://gestion.cte.sep.gob.mx/insumos/docs/2627/0/s0/2627_s0_ele_sPag_directivos.pdf"
+        },
+        {
+          "fila_hoja": 10,
+          "nombre": "Orientaciones para la Fase Intensiva del Consejo Técnico Escolar. Centros y Escuelas. Educación Básica",
+          "accion": "PDF",
+          "nombre_desplegado": "MISMO_NOMBRE",
+          "url": "https://gestion.cte.sep.gob.mx/insumos/docs/2627/0/s0/2627_s0_ele_sPag_escuelas.pdf"
+        },
+        {
+          "fila_hoja": 11,
+          "nombre": "Orientaciones para Fase Intensiva del Consejo Técnico Escolar. Escuelas Multigrado. Educación Básica",
+          "accion": "PDF",
+          "nombre_desplegado": "MISMO_NOMBRE",
+          "url": "https://gestion.cte.sep.gob.mx/insumos/docs/2627/0/s0/2627_s0_ele_sPag_multigrado.pdf"
+        }
+      ]
+    },
+    {
+      "id": "LISTA_DESPLEGABLE_3",
+      "encabezados": {
+        "nombre": "LISTA_DESPLEGABLE_3",
+        "accion": "ABRE",
+        "nombre_desplegado": "NOMBRE_DESPLEGADO",
+        "url": "URL"
+      },
+      "filas": [
+        {
+          "fila_hoja": 14,
+          "nombre": "Conferencia mañanera del pueblo del 20 de julio de 2026 Del minuto 30:30 al 59:20",
+          "accion": "VIDEO",
+          "nombre_desplegado": "MISMO_NOMBRE",
+          "url": "https://www.youtube.com/watch?v=_6bryohT8AQ"
+        },
+        {
+          "fila_hoja": 15,
+          "nombre": "Conferencia mañanera del pueblo del 27 de julio de 2026 Del minuto 28:30 al 47:14",
+          "accion": "VIDEO",
+          "nombre_desplegado": "MISMO_NOMBRE",
+          "url": "https://www.youtube.com/watch?v=iRVx-hqhbec"
+        },
+        {
+          "fila_hoja": 16,
+          "nombre": "Conferencia mañanera del pueblo del 3 de agosto de 2026 Del minuto 30:45 al 53:40",
+          "accion": "VIDEO",
+          "nombre_desplegado": "MISMO_NOMBRE",
+          "url": "https://www.youtube.com/watch?v=-FdcdwgVUHA"
+        },
+        {
+          "fila_hoja": 17,
+          "nombre": "Conferencia mañanera del pueblo del 10 de agosto de 2026 Del minuto 25:00 al 46:15",
+          "accion": "VIDEO",
+          "nombre_desplegado": "MISMO_NOMBRE",
+          "url": "https://www.youtube.com/watch?v=D_c1Vy2e2_M"
+        },
+        {
+          "fila_hoja": 18,
+          "nombre": "Conferencia mañanera del pueblo del 17 de agosto de 2026 Del minuto 24:38 al 57:51",
+          "accion": "VIDEO",
+          "nombre_desplegado": "MISMO_NOMBRE",
+          "url": "https://www.youtube.com/watch?v=uJAQ2iJCj6U"
+        },
+        {
+          "fila_hoja": 19,
+          "nombre": "Pantallas con sentido",
+          "accion": "PAGINA",
+          "nombre_desplegado": "MISMO_NOMBRE",
+          "url": "https://gestion.cte.sep.gob.mx/insumos/docs/2627/0/s0/2627_s0_ele_sPag_pantallas_con_sentido.pdf"
+        },
+        {
+          "fila_hoja": 20,
+          "nombre": "Bienestar Digital - Aportaciones de los expertos",
+          "accion": "VIDEO",
+          "nombre_desplegado": "MISMO_NOMBRE",
+          "url": "https://gestion.cte.sep.gob.mx/insumos/docs/2627/0/s0/2627_s0_ele_sPag_bienestar_digital.pdf"
+        }
+      ]
+    },
+    {
+      "id": "LISTA_DESPLEGABLE_4",
+      "encabezados": {
+        "nombre": "LISTA_DESPLEGABLE_4",
+        "accion": "",
+        "nombre_desplegado": "NOMBRE_DESPLEGADO",
+        "url": "URL"
+      },
+      "filas": [
+        {
+          "fila_hoja": 23,
+          "nombre": "Consulta. El impacto de los dispositivos digitales en las infancias y las juventudes",
+          "accion": "PDF",
+          "nombre_desplegado": "MISMO_NOMBRE",
+          "url": "https://gestion.cte.sep.gob.mx/insumos/docs/2627/0/s0/2627_s0_ele_sPag_pantallas_con_sentido.pdf"
+        },
+        {
+          "fila_hoja": 24,
+          "nombre": "Cuestionario Diagnóstico. Compromiso Presidencial número 27: “Desaparece la USICAMM. Nuevo sistema de contratación y promoción de maestros”",
+          "accion": "PDF",
+          "nombre_desplegado": "MISMO_NOMBRE",
+          "url": "https://gestion.cte.sep.gob.mx/insumos/docs/2627/0/s0/2627_s0_ele_sPag_cuestionario_usicamm.pdf"
+        },
+        {
+          "fila_hoja": 25,
+          "nombre": "Jornada de concientización sobre la gravedad del abuso sexual y el maltrato infantil 2026",
+          "accion": "PDF",
+          "nombre_desplegado": "MISMO_NOMBRE",
+          "url": "https://gestion.cte.sep.gob.mx/insumos/docs/2627_s0_documento_anexo_jornada_concientiza_maltrato_infantil_2026.pdf?1787767366677"
+        },
+        {
+          "fila_hoja": 26,
+          "nombre": "Memorias, sentidos y experiencias para construir narrativas pedagógicas desde la NEM",
+          "accion": "PDF",
+          "nombre_desplegado": "MISMO_NOMBRE",
+          "url": "https://gestion.cte.sep.gob.mx/insumos/docs/2627/0/s0/2627_s0_ele_sPag_directivos.pdf"
+        },
+        {
+          "fila_hoja": 27,
+          "nombre": "Ejercicios Integradores del Aprendizaje",
+          "accion": "PDF",
+          "nombre_desplegado": "MISMO_NOMBRE",
+          "url": "https://gestion.cte.sep.gob.mx/insumos/docs/2627/0/s0/2627_s0_ele_sPag_ejercicios_integradores.pdf"
+        },
+        {
+          "fila_hoja": 28,
+          "nombre": "Encuesta nacional: Actividades y requerimientos de información solicitados a las figuras educativas en educación básica",
+          "accion": "PDF",
+          "nombre_desplegado": "MISMO_NOMBRE",
+          "url": "https://gestion.cte.sep.gob.mx/insumos/docs/2627/0/s0/2627_s0_ele_sPag_encuesta_actividades.pdf"
+        },
+        {
+          "fila_hoja": 29,
+          "nombre": "Jornadas Nacionales por la Paz y contra las adicciones. El cristal te quiebra la vida. Aléjate de las drogas. Elige ser feliz.",
+          "accion": "PDF",
+          "nombre_desplegado": "MISMO_NOMBRE",
+          "url": "https://gestion.cte.sep.gob.mx/insumos/docs/2627/0/s0/2627_s0_ele_sPag_jornadas_paz.pdf"
+        },
+        {
+          "fila_hoja": 30,
+          "nombre": "Bienestar Digital - Aportaciones de los expertos (Bloque inferior)",
+          "accion": "PDF",
+          "nombre_desplegado": "MISMO_NOMBRE",
+          "url": "https://gestion.cte.sep.gob.mx/insumos/docs/2627/0/s0/2627_s0_ele_sPag_bienestar_digital.pdf"
+        }
+      ]
+    }
+  ]
+}
