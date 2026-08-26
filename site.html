@@ -495,4 +495,34 @@ hydrateContinuity=function(text){
  v31State.g3.objective=ctLine(text,'OBJETIVO_ESTRATEGICO_PMC');v31State.g3.goal=ctLine(text,'META_MEDIBLE_PMC');v31State.g3.responsible=ctLine(text,'RESPONSABLE_DIRECTO');const dates=ctLine(text,'FECHAS_APLICACION_EIA').split('|').map(x=>x.trim());v31State.g5.eia1=/^2026-\d\d-\d\d$/.test(dates[0])?dates[0]:'';v31State.g5.eia2=/^2026-\d\d-\d\d$/.test(dates[1])?dates[1]:'';v31State.g6.signatures=(ctLine(text,'INTEGRANTES_FIRMAS_G6')||'').replace(/ \| /g,'\n');v31State.g6.reviewDate=ctLine(text,'FECHA_REVISION_G6');v31PreviousHydrate(text)
 };
 </script>
+<style>
+.v32-restored{margin:10px 0;padding:10px 12px;border-radius:9px;background:#e8f4ed;color:#23653c;font-size:13px;font-weight:700}
+</style>
+<script>
+let v32Hydrating=false,v32HydratedG2=false;
+function v32Useful(value){return value&&value!=='PENDIENTE'&&!/^Pendiente de/.test(value)}
+function v32RestoreG2(text){
+ const integration=ctLine(text,'TIPO_INTEGRACION');if(['directa','local','multigrado'].includes(integration))g2Integration=integration;
+ const problemLine=ctLine(text,'PROBLEMATICA_CODISEÑO_SELECCIONADA'),ids=[...new Set(problemLine.match(/P(?:1[0-7]|[1-9])\b/g)||[])];if(ids.length)g2Order=ids;
+ const detail=ctLine(text,'DETALLE_CUADRO_DOBLE_ENTRADA');ids.forEach(id=>{const start=detail.search(new RegExp('(?:^|\\|\\|\\s*)'+id+'\\b'));if(start<0)return;const rest=detail.slice(start),next=rest.slice(1).search(/\|\|\s*P(?:1[0-7]|[1-9])\b/),part=next>=0?rest.slice(0,next+1):rest;
+  if(g2Integration==='local'){const value=(part.split('=>')[1]||'').trim();g2Links[id]={fase:'',rows:[],local:value==='PENDIENTE'?'':value,other:''};return}
+  const rows=[];g2Matrix.forEach((row,index)=>{const clean=String(row.pda||'').replace(/\s*\(\d+\)\s*$/,'').trim();if(clean&&part.includes(clean))rows.push(index)});const phase=rows.length?g2Matrix[rows[0]].fase:((part.match(/(Fase [^|]+)/)||[])[1]||'').trim();g2Links[id]={fase:phase,rows,local:'',other:''}
+ });
+ const supports=ctLine(text,'SUSTENTO_AUTONOMIA_PEDAGOGICA');supports.split('|').forEach(piece=>{const match=piece.trim().match(/^(P(?:1[0-7]|[1-9]))=(.*)$/);if(match&&match[2]&&!/NO_REQUERIDO|PENDIENTE/.test(match[2]))g2SchoolJustifications[match[1]]=match[2].trim()})
+}
+function v32ApplyVisibleState(){
+ if(!activeFlow||cauMode)return false;
+ if(activeFlow.id==='curricular'){questionsBox.querySelectorAll('[name="g2integration"]').forEach(input=>input.checked=input.value===g2Integration);questionsBox.querySelectorAll('[data-g2problem]').forEach(input=>input.checked=g2Order.includes(input.dataset.g2problem));renderG2Links();const panel=questionsBox.querySelector('.g2-diagnostic');if(panel){panel.querySelectorAll('[data-g2-parameter]').forEach(input=>input.checked=g2SocioSelected.has(input.dataset.g2Parameter));v31RenderRecursive()}return !!g2Order.length}
+ const rows=continuityState.flows[activeFlow.id]||[];let restored=false;
+ questionsBox.querySelectorAll('.question-item[data-prompt]').forEach((item,index)=>{const value=rows[index]?.a||'';if(!v32Useful(value))return;restored=true;item.querySelectorAll('input[type="checkbox"],input[type="radio"]').forEach(input=>input.checked=value.includes(input.value));const answer=item.querySelector('.compiled-answer');if(answer)answer.value=value});
+ if(activeFlow.id==='diagnostico'){const panel=questionsBox.querySelector('.g4-eia-panel');if(panel)g4RenderRules(panel)}
+ return restored
+}
+const v32PreviousSelectFlow=selectFlow;
+selectFlow=function(id){if(id!=='curricular'||!v32HydratedG2){v32PreviousSelectFlow(id);return}const selected=new Set(g2SocioSelected),order=[...g2Order],links=JSON.parse(JSON.stringify(g2Links)),supports={...g2SchoolJustifications},integration=g2Integration;v32PreviousSelectFlow(id);g2SocioSelected=selected;g2Order=order;g2Links=links;g2SchoolJustifications=supports;g2Integration=integration};
+const v32PreviousShowQuestions=showQuestions;
+showQuestions=function(){v32PreviousShowQuestions();if(v32Hydrating||!activeFlow||cauMode)return;const restored=v32ApplyVisibleState();if(restored){questionsBox.insertAdjacentHTML('afterbegin','<div class="v32-restored">Información previa recuperada. Revisen las selecciones y respuestas antes de continuar.</div>');renderProduct(false)}};
+const v32PreviousHydrate=hydrateContinuity;
+hydrateContinuity=function(text){v32Hydrating=true;v32RestoreG2(text);v32HydratedG2=true;v32PreviousHydrate(text);v32Hydrating=false;if(activeFlow){showQuestions();renderProduct(false)}dirty=false;continuityPanel.querySelector('#ct-status').textContent='Paquete TXT cargado. Se reconstruyeron selecciones, respuestas, vínculos curriculares y campos de seguimiento visibles.'};
+</script>
 </body></html>
