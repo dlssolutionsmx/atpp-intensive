@@ -8,7 +8,7 @@ import streamlit.components.v1 as components
 
 
 st.set_page_config(
-    page_title="ATpp Intensive",
+    page_title="ATpp",
     page_icon="🎓",
     layout="wide",
     initial_sidebar_state="collapsed",
@@ -20,6 +20,9 @@ MATRIX_FILE = ROOT / "matriz-pda-problemas-v2.xlsx"
 SOLUTIONS_FILE = ROOT / "matriz-soluciones-pmc.xlsx"
 LINKS_FILE = ROOT / "objeto_tablas_enlaces.json"
 CHALKBOARD_FILE = ROOT / "pizarron_transparente.png"
+ATPP_MAIN_LOGO_FILE = ROOT / "ATpp_sticker_main.png"
+ATPP_INTENSIVE_LOGO_FILE = ROOT / "ATpp_sticker_intensive.png"
+DLS_LOGO_FILE = ROOT / "DLS_LOGO_N2.png"
 
 
 @st.cache_data
@@ -119,6 +122,10 @@ if not LINKS_FILE.exists() or not CHALKBOARD_FILE.exists():
     st.error("No se encontraron los recursos del pizarrón de orientaciones.")
     st.stop()
 
+if not all(path.exists() for path in (ATPP_MAIN_LOGO_FILE, ATPP_INTENSIVE_LOGO_FILE, DLS_LOGO_FILE)):
+    st.error("No se encontraron los recursos institucionales de identidad visual.")
+    st.stop()
+
 try:
     site_html = SITE_FILE.read_text(encoding="utf-8").replace(
         "__G2_MATRIX_FROM_EXCEL__",
@@ -132,6 +139,15 @@ try:
     ).replace(
         "__CHALKBOARD_DATA_URI__",
         "data:image/png;base64," + base64.b64encode(CHALKBOARD_FILE.read_bytes()).decode("ascii"),
+    ).replace(
+        "__ATPP_MAIN_LOGO_DATA_URI__",
+        "data:image/png;base64," + base64.b64encode(ATPP_MAIN_LOGO_FILE.read_bytes()).decode("ascii"),
+    ).replace(
+        "__ATPP_INTENSIVE_LOGO_DATA_URI__",
+        "data:image/png;base64," + base64.b64encode(ATPP_INTENSIVE_LOGO_FILE.read_bytes()).decode("ascii"),
+    ).replace(
+        "__DLS_LOGO_DATA_URI__",
+        "data:image/png;base64," + base64.b64encode(DLS_LOGO_FILE.read_bytes()).decode("ascii"),
     )
 except Exception as exc:
     st.error(f"No fue posible cargar las matrices de trabajo: {exc}")
