@@ -1,6 +1,11 @@
 # ATpp Intensive · Streamlit
 
-Primera versión Streamlit del micrositio ATPP Intensive.
+El proyecto sirve ahora dos páginas dentro de la misma aplicación:
+
+- `/` — dashboard inicial basado en `dashboard.html`.
+- `/?page=intensive` — subpágina **ATpp Intensive**, que conserva la vista 2 original.
+
+El botón **ATpp Intensive** del dashboard navega automáticamente a `?page=intensive`. Desde la subpágina, **Volver al dashboard** regresa a `?page=dashboard`.
 
 ## Ejecución local
 
@@ -9,4 +14,6 @@ python -m pip install -r requirements.txt
 python -m streamlit run app.py
 ```
 
-Esta etapa conserva la interfaz y la lógica del micrositio base. La integración de productos interactivos queda fuera de esta versión.
+La aplicación carga las matrices Excel y los recursos del módulo Intensive únicamente cuando se accede a la subpágina correspondiente.
+
+Esta etapa conserva la lógica interactiva de ATpp Intensive y utiliza el HTML adjunto como dashboard de entrada.
