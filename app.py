@@ -72,6 +72,13 @@ def render_dashboard() -> None:
         st.stop()
     dashboard_html = DASHBOARD_FILE.read_text(encoding="utf-8")
     dashboard_html = dashboard_html.replace(
+        "</head>",
+        """<style>
+html, body { margin: 0 !important; padding: 0 !important; width: 100% !important; }
+body { overflow-x: hidden; }
+</style></head>""",
+    )
+    dashboard_html = dashboard_html.replace(
         "</body>",
         """<script>
 (function () {
@@ -103,6 +110,60 @@ def render_dashboard() -> None:
   new MutationObserver(wireIntensiveButton).observe(document.body, {childList: true, subtree: true});
 })();
 </script></body>""",
+    )
+    st.markdown(
+        """
+        <style>
+          [data-testid="stAppViewContainer"] .main .block-container {
+            width: 100% !important;
+            max-width: none !important;
+            padding: 0 24px !important;
+          }
+          [data-testid="stAppViewContainer"] .main iframe {
+            width: 100% !important;
+            max-width: none !important;
+            display: block;
+          }
+          .dashboard-native-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            min-height: 54px;
+            padding: 7px 18px;
+            margin: 0 0 8px;
+            border-bottom: 1px solid #dfe7ee;
+            background: #fff;
+            color: #0A2F5E;
+            font: 700 14px/1.2 Inter, Arial, sans-serif;
+          }
+          .dashboard-native-header .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-right: auto;
+          }
+          .dashboard-native-header .brand-mark {
+            padding: 4px 8px;
+            border-radius: 8px;
+            background: #08263f;
+            color: #fff;
+            font-weight: 800;
+          }
+          .dashboard-native-header a {
+            padding: 9px 13px;
+            border-radius: 18px;
+            background: #e2f4fb;
+            color: #0A2F5E !important;
+            text-decoration: none !important;
+            white-space: nowrap;
+          }
+        </style>
+        <header class="dashboard-native-header" aria-label="Marco nativo de ATpp">
+          <div class="brand"><span class="brand-mark">ATpp</span><span>3° A Tercer Grado · Matutino · Prim Benito Juárez · Lenguajes</span></div>
+          <a href="?page=intensive">ATpp Intensive</a>
+        </header>
+        """,
+        unsafe_allow_html=True,
     )
     components.html(dashboard_html, height=1200, scrolling=True)
 
