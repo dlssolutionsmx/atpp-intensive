@@ -75,14 +75,27 @@ def render_dashboard() -> None:
         "</body>",
         """<script>
 (function () {
+  function intensiveUrl() {
+    try {
+      return new URL('?page=intensive', window.top.location.href).href;
+    } catch (error) {
+      return '?page=intensive';
+    }
+  }
   function wireIntensiveButton() {
     document.querySelectorAll('button').forEach(function (button) {
       if (button.dataset.atppIntensiveWired === 'true') return;
       if ((button.textContent || '').trim().replace(/\\s+/g, ' ').startsWith('ATpp Intensive')) {
         button.dataset.atppIntensiveWired = 'true';
-        button.addEventListener('click', function () {
-          window.top.location.href = '?page=intensive';
-        });
+        var link = document.createElement('a');
+        link.href = intensiveUrl();
+        link.target = '_top';
+        link.rel = 'noopener';
+        link.className = button.className;
+        link.style.cssText = button.style.cssText;
+        link.innerHTML = button.innerHTML;
+        link.setAttribute('aria-label', 'Abrir ATpp Intensive');
+        button.replaceWith(link);
       }
     });
   }
