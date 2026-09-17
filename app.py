@@ -143,6 +143,60 @@ def render_dashboard_overview() -> None:
     )
 
 
+@st.cache_data(show_spinner=False)
+def cargar_matriz_curricular_segura() -> list[dict]:
+    try:
+        return cargar_matriz_curricular()
+    except Exception:
+        return []
+
+
+def render_native_planning(section: str) -> None:
+    if section == "diagnostico":
+        st.title("1. Diagnóstico")
+        st.caption("Bloque nativo de Streamlit · Características, intereses y necesidades del grupo")
+        with st.form("native-diagnostico"):
+            left, right = st.columns(2)
+            with left:
+                grupo = st.text_input("Grupo", value=st.session_state.get("diag_grupo", "3° A"))
+                contexto = st.selectbox("Contexto del grupo", ["Urbano", "Rural", "Indígena", "Multigrado"], index=0)
+            with right:
+                fortalezas = st.text_area("Fortalezas observadas", value=st.session_state.get("diag_fortalezas", ""), height=110)
+                necesidades = st.text_area("Necesidades prioritarias", value=st.session_state.get("diag_necesidades", ""), height=110)
+            if st.form_submit_button("Guardar diagnóstico", type="primary"):
+                st.session_state.update(diag_grupo=grupo, diag_fortalezas=fortalezas, diag_necesidades=necesidades)
+                st.success("Diagnóstico guardado en esta sesión.")
+        st.info("La vista original continúa debajo como respaldo mientras terminamos de trasladar sus tarjetas y modales.")
+    elif section == "contenidos":
+        st.title("2. Contenidos")
+        st.caption("Bloque nativo de Streamlit · Selección curricular y PDA")
+        records = cargar_matriz_curricular_segura()
+        options = sorted({r["contenido"] for r in records}) or ["Producción e interpretación de textos"]
+        selected = st.selectbox("Selecciona un contenido", options, index=0)
+        matches = [r for r in records if r["contenido"] == selected]
+        if matches:
+            record = matches[0]
+            st.markdown(f"**Campo formativo:** {record['campo']}  ")
+            st.markdown(f"**Fase:** {record['fase']}  ")
+            st.info(f"**PDA:** {record['pda']}")
+            st.text_area("Metodología sugerida", value=record["metodologia"], height=100, disabled=True)
+        if st.button("Guardar selección de contenido", type="primary"):
+            st.session_state["contenido_seleccionado"] = selected
+            st.success("Contenido seleccionado para la planeación.")
+        st.info("La matriz original permanece debajo para conservar filtros y relaciones hasta completar la migración.")
+    elif section == "estrategias":
+        st.title("3. Estrategias")
+        st.caption("Bloque nativo de Streamlit · Diseño de la intervención didáctica")
+        with st.form("native-estrategias"):
+            estrategias = st.multiselect("Estrategias activas", ["ABP", "Estaciones", "Tutoría entre pares", "Gamificación", "Lectura compartida"], default=st.session_state.get("estrategias", ["ABP"]))
+            duracion = st.slider("Duración estimada (minutos)", 20, 240, int(st.session_state.get("duracion", 150)), 10)
+            nota = st.text_area("Notas de implementación", value=st.session_state.get("estrategia_nota", ""), height=100)
+            if st.form_submit_button("Guardar estrategias", type="primary"):
+                st.session_state.update(estrategias=estrategias, duracion=duracion, estrategia_nota=nota)
+                st.success("Estrategias guardadas en esta sesión.")
+        st.info("La vista React original sigue disponible debajo para comparar el flujo antes de retirar el respaldo.")
+
+
 def render_dashboard(section: str = "dashboard") -> None:
     if not DASHBOARD_FILE.exists():
         st.error("No se encontró dashboard.html")
@@ -368,4 +422,6 @@ else:
     render_dashboard_sidebar(section)
     if section == "dashboard":
         render_dashboard_overview()
+    elif section in {"diagnostico", "contenidos", "estrategias"}:
+        render_native_planning(section)
     render_dashboard(section)
