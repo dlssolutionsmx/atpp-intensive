@@ -280,6 +280,8 @@ def render_native_planning_summary() -> None:
 
 
 def render_dashboard(section: str = "dashboard") -> None:
+    if section != "dashboard":
+        return
     if not DASHBOARD_FILE.exists():
         st.error("No se encontró dashboard.html")
         st.stop()
