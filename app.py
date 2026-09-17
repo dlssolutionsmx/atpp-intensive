@@ -197,6 +197,46 @@ def render_native_planning(section: str) -> None:
         st.info("La vista React original sigue disponible debajo para comparar el flujo antes de retirar el respaldo.")
 
 
+def render_native_execution(section: str) -> None:
+    if section == "secuencia":
+        st.title("4. Secuencia")
+        st.caption("Bloque nativo de Streamlit · Inicio, desarrollo y cierre")
+        with st.form("native-secuencia"):
+            inicio = st.number_input("Inicio (minutos)", min_value=5, max_value=120, value=40, step=5)
+            desarrollo = st.number_input("Desarrollo (minutos)", min_value=10, max_value=240, value=70, step=5)
+            cierre = st.number_input("Cierre (minutos)", min_value=5, max_value=120, value=40, step=5)
+            actividades = st.text_area("Actividades clave", value=st.session_state.get("actividades", "Activación de saberes previos\nTrabajo colaborativo\nSocialización de evidencias"), height=120)
+            if st.form_submit_button("Guardar secuencia", type="primary"):
+                st.session_state.update(inicio=inicio, desarrollo=desarrollo, cierre=cierre, actividades=actividades)
+                st.success(f"Secuencia guardada: {inicio + desarrollo + cierre} minutos.")
+        a, b, c = st.columns(3)
+        a.metric("Inicio", f"{inicio} min")
+        b.metric("Desarrollo", f"{desarrollo} min")
+        c.metric("Cierre", f"{cierre} min")
+    elif section == "evaluacion":
+        st.title("5. Evaluación")
+        st.caption("Bloque nativo de Streamlit · Evidencias, criterios e instrumentos")
+        with st.form("native-evaluacion"):
+            instrumento = st.selectbox("Instrumento principal", ["Rúbrica", "Lista de cotejo", "Autoevaluación", "Guía de observación"])
+            criterios = st.multiselect("Criterios", ["Participación", "Comprensión", "Producción", "Colaboración", "Comunicación"], default=["Participación", "Comprensión"])
+            evidencia = st.text_input("Evidencia esperada", value=st.session_state.get("evidencia", "Producto escrito y socialización oral"))
+            if st.form_submit_button("Guardar evaluación", type="primary"):
+                st.session_state.update(instrumento=instrumento, criterios=criterios, evidencia=evidencia)
+                st.success("Evaluación guardada en esta sesión.")
+        st.write("**Criterios activos:**", ", ".join(criterios) if criterios else "Sin criterios seleccionados")
+    elif section == "evidencias":
+        st.title("6. Evidencias")
+        st.caption("Bloque nativo de Streamlit · Productos, participación y recursos")
+        with st.form("native-evidencias"):
+            productos = st.text_area("Productos o evidencias", value=st.session_state.get("productos", "Borrador\nProducto final\nRegistro de participación"), height=120)
+            recursos = st.text_input("Recursos principales", value=st.session_state.get("recursos", "Cuaderno, textos, proyector y materiales de aula"))
+            responsable = st.text_input("Responsable de seguimiento", value=st.session_state.get("responsable", "Docente titular"))
+            if st.form_submit_button("Guardar evidencias", type="primary"):
+                st.session_state.update(productos=productos, recursos=recursos, responsable=responsable)
+                st.success("Evidencias guardadas en esta sesión.")
+        st.download_button("Descargar resumen de evidencias", f"{productos}\nRecursos: {recursos}\nResponsable: {responsable}", file_name="evidencias-atpp.txt")
+
+
 def render_dashboard(section: str = "dashboard") -> None:
     if not DASHBOARD_FILE.exists():
         st.error("No se encontró dashboard.html")
@@ -424,4 +464,6 @@ else:
         render_dashboard_overview()
     elif section in {"diagnostico", "contenidos", "estrategias"}:
         render_native_planning(section)
+    elif section in {"secuencia", "evaluacion", "evidencias"}:
+        render_native_execution(section)
     render_dashboard(section)
