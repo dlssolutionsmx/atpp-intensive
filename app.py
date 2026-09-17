@@ -295,6 +295,11 @@ def render_dashboard(section: str = "dashboard") -> None:
             max-width: none !important;
             display: block;
           }
+          .subject-menu { display: flex; gap: 8px; overflow-x: auto; padding: 8px 0 10px; border-bottom: 1px solid #e6edf2; white-space: nowrap; }
+          .subject-pill { display: inline-flex; align-items: center; padding: 8px 15px; border: 1px solid #e5eaf0; border-radius: 999px; background: #fff; color: #17324d !important; font: 600 12px/1.1 Inter, Arial, sans-serif; text-decoration: none !important; }
+          .subject-pill:hover, .subject-pill.active { background: #08263f; border-color: #08263f; color: #fff !important; }
+          .subject-pill.grouped { background: #dff4fb; border-color: #bde7f4; color: #075276 !important; }
+          .subject-pill.grouped:hover, .subject-pill.grouped.active { background: #b9e8f5; border-color: #8dd7eb; color: #063c57 !important; }
           .dashboard-native-header {
             display: flex;
             align-items: center;
@@ -336,13 +341,23 @@ def render_dashboard(section: str = "dashboard") -> None:
         """,
         unsafe_allow_html=True,
     )
-    st.markdown("### Asignaturas")
-    subjects = [
-        "Español", "Inglés", "Artes", "Lengua Indígena Materna",
-        "Lengua Indígena Segunda Lengua", "Matemáticas", "Biología",
-        "Historia", "Formación Cívica y Ética", "Tecnología", "Educación Física",
+    subject_key = st.query_params.get("subject", "espanol")
+    subject_menu = [
+        ("espanol", "Español", False), ("ingles", "Inglés", False), ("artes", "Artes", False),
+        ("lengua-materna", "Lengua Indígena como Lengua Materna", False),
+        ("lengua-segunda", "Lengua Indígena como Segunda Lengua", False),
+        ("saberes", "Saberes y P.C.", True), ("etica", "Ética NyC", True), ("humano", "De lo Humano", True),
     ]
-    subject = st.radio("Asignaturas", subjects, horizontal=True, label_visibility="collapsed")
+    menu_items = []
+    labels = {key: label for key, label, _ in subject_menu}
+    subject = labels.get(subject_key, "Español")
+    for key, label, grouped in subject_menu:
+        active = " active" if key == subject_key else ""
+        menu_items.append(f"<a class='subject-pill{' grouped' if grouped else ''}{active}' href='?page=dashboard&subject={key}'>{label}</a>")
+    st.markdown(
+        "<nav class='subject-menu' aria-label='Asignaturas'>" + "".join(menu_items) + "</nav>",
+        unsafe_allow_html=True,
+    )
     st.session_state["asignatura"] = subject
     st.markdown(
         f"<div class='dashboard-native-header'><div class='brand'><span class='brand-mark'>ATpp</span><span>3° A Tercer Grado · Matutino · Prim. Benito Juárez · {subject}</span></div><a href='?page=intensive'>ATpp Intensive</a></div>",
