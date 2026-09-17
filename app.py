@@ -290,6 +290,7 @@ def render_dashboard(section: str = "dashboard") -> None:
             max-width: none !important;
             padding: 0 24px !important;
           }
+          [data-testid="stSidebar"] { display: none !important; }
           [data-testid="stAppViewContainer"] .main iframe {
             width: 100% !important;
             max-width: none !important;
@@ -334,10 +335,6 @@ def render_dashboard(section: str = "dashboard") -> None:
             white-space: nowrap;
           }
         </style>
-        <header class="dashboard-native-header" aria-label="Marco nativo de ATpp">
-          <div class="brand"><span class="brand-mark">ATpp</span><span>3° A Tercer Grado · Matutino · Prim Benito Juárez · Lenguajes</span></div>
-          <a href="?page=intensive">ATpp Intensive</a>
-        </header>
         """,
         unsafe_allow_html=True,
     )
