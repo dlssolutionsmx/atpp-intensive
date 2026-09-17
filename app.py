@@ -237,6 +237,48 @@ def render_native_execution(section: str) -> None:
         st.download_button("Descargar resumen de evidencias", f"{productos}\nRecursos: {recursos}\nResponsable: {responsable}", file_name="evidencias-atpp.txt")
 
 
+def render_native_planning_summary() -> None:
+    state = {
+        "diagnostico": {
+            "grupo": st.session_state.get("diag_grupo", "3° A"),
+            "fortalezas": st.session_state.get("diag_fortalezas", ""),
+            "necesidades": st.session_state.get("diag_necesidades", ""),
+        },
+        "contenido": st.session_state.get("contenido_seleccionado", "Sin seleccionar"),
+        "estrategias": st.session_state.get("estrategias", []),
+        "duracion": st.session_state.get("duracion", 150),
+        "secuencia": {
+            "inicio": st.session_state.get("inicio", 40),
+            "desarrollo": st.session_state.get("desarrollo", 70),
+            "cierre": st.session_state.get("cierre", 40),
+        },
+        "evaluacion": {
+            "instrumento": st.session_state.get("instrumento", "Rúbrica"),
+            "criterios": st.session_state.get("criterios", []),
+            "evidencia": st.session_state.get("evidencia", ""),
+        },
+        "evidencias": {
+            "productos": st.session_state.get("productos", ""),
+            "recursos": st.session_state.get("recursos", ""),
+            "responsable": st.session_state.get("responsable", "Docente titular"),
+        },
+    }
+    with st.expander("Resumen integrado de la planeación", expanded=False):
+        a, b, c = st.columns(3)
+        a.metric("Grupo", state["diagnostico"]["grupo"])
+        b.metric("Contenido", state["contenido"][:24])
+        c.metric("Duración", f"{state['duracion']} min")
+        st.write("**Estrategias:**", ", ".join(state["estrategias"]) or "Sin seleccionar")
+        st.write("**Instrumento:**", state["evaluacion"]["instrumento"])
+        st.write("**Criterios:**", ", ".join(state["evaluacion"]["criterios"]) or "Sin seleccionar")
+        st.download_button(
+            "Descargar planeación integrada (JSON)",
+            json.dumps(state, ensure_ascii=False, indent=2),
+            file_name="planeacion-atpp.json",
+            mime="application/json",
+        )
+
+
 def render_dashboard(section: str = "dashboard") -> None:
     if not DASHBOARD_FILE.exists():
         st.error("No se encontró dashboard.html")
@@ -466,4 +508,6 @@ else:
         render_native_planning(section)
     elif section in {"secuencia", "evaluacion", "evidencias"}:
         render_native_execution(section)
+    if section != "dashboard":
+        render_native_planning_summary()
     render_dashboard(section)
