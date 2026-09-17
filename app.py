@@ -135,13 +135,30 @@ def render_intensive() -> None:
 <style>
   #atpp { display: none !important; }
   #intensive { display: block !important; }
-  .topbar .nav, .topbar .mobile-toggle, .topbar .demo { display: none !important; }
+  .topbar .nav { display: flex !important; }
+  .topbar .mobile-toggle, .topbar .demo { display: none !important; }
   .topbar .brand { pointer-events: none; }
+  .topbar .nav .home-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 10px 17px;
+    border-radius: 9px;
+    background: var(--blue);
+    color: #fff;
+    font-weight: 700;
+    text-decoration: none;
+  }
   .back-atpp { display: inline-flex !important; }
 </style>
 <script>
 (function () {
   document.title = 'ATpp Intensive — Fases y talleres intensivos';
+  var nav = document.querySelector('.topbar .nav');
+  if (nav) {
+    nav.innerHTML = '<a class="home-link" href="' + new URL('?page=dashboard', window.top.location.href).href + '" target="_top" rel="noopener">← Inicio</a>';
+    nav.setAttribute('aria-label', 'Navegación de ATpp Intensive');
+  }
   var back = document.querySelector('.back-atpp');
   if (back) {
     back.textContent = '← Volver al dashboard';
