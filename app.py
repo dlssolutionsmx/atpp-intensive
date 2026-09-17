@@ -282,64 +282,6 @@ def render_native_planning_summary() -> None:
 def render_dashboard(section: str = "dashboard") -> None:
     if section != "dashboard":
         return
-    if not DASHBOARD_FILE.exists():
-        st.error("No se encontró dashboard.html")
-        st.stop()
-    dashboard_html = DASHBOARD_FILE.read_text(encoding="utf-8")
-    dashboard_html = dashboard_html.replace(
-        "</head>",
-        """<style>
-html, body { margin: 0 !important; padding: 0 !important; width: 100% !important; }
-body { overflow-x: hidden; }
-</style></head>""",
-    )
-    dashboard_html = dashboard_html.replace(
-        "</body>",
-        """<script>
-(function () {
-  function intensiveUrl() {
-    try {
-      return new URL('?page=intensive', window.top.location.href).href;
-    } catch (error) {
-      return '?page=intensive';
-    }
-  }
-  function wireIntensiveButton() {
-    document.querySelectorAll('button').forEach(function (button) {
-      if (button.dataset.atppIntensiveWired === 'true') return;
-      if ((button.textContent || '').trim().replace(/\\s+/g, ' ').startsWith('ATpp Intensive')) {
-        button.dataset.atppIntensiveWired = 'true';
-        var link = document.createElement('a');
-        link.href = intensiveUrl();
-        link.target = '_top';
-        link.rel = 'noopener';
-        link.className = button.className;
-        link.style.cssText = button.style.cssText;
-        link.innerHTML = button.innerHTML;
-        link.setAttribute('aria-label', 'Abrir ATpp Intensive');
-        button.replaceWith(link);
-      }
-    });
-  }
-  wireIntensiveButton();
-  new MutationObserver(wireIntensiveButton).observe(document.body, {childList: true, subtree: true});
-  var requested = %s;
-  var labels = {
-    diagnostico: '1. Diagnóstico', contenidos: '2. Contenidos',
-    estrategias: '3. Estrategias', secuencia: '4. Secuencia',
-    evaluacion: '5. Evaluación', evidencias: '6. Evidencias',
-    dashboard: 'Dashboard'
-  };
-  if (requested && labels[requested]) {
-    setTimeout(function () {
-      document.querySelectorAll('button').forEach(function (button) {
-        if ((button.textContent || '').trim().replace(/\\s+/g, ' ') === labels[requested]) button.click();
-      });
-    }, 250);
-  }
-})();
-</script></body>""" % json.dumps(section),
-    )
     st.markdown(
         """
         <style>
@@ -394,7 +336,19 @@ body { overflow-x: hidden; }
         """,
         unsafe_allow_html=True,
     )
-    components.html(dashboard_html, height=1200, scrolling=True)
+    st.markdown("### Asignaturas")
+    subjects = [
+        "Español", "Inglés", "Artes", "Lengua Indígena Materna",
+        "Lengua Indígena Segunda Lengua", "Matemáticas", "Biología",
+        "Historia", "Formación Cívica y Ética", "Tecnología", "Educación Física",
+    ]
+    subject = st.radio("Asignaturas", subjects, horizontal=True, label_visibility="collapsed")
+    st.session_state["asignatura"] = subject
+    st.markdown(
+        f"<div class='dashboard-native-header'><div class='brand'><span class='brand-mark'>ATpp</span><span>3° A Tercer Grado · Matutino · Prim. Benito Juárez · {subject}</span></div><a href='?page=intensive'>ATpp Intensive</a></div>",
+        unsafe_allow_html=True,
+    )
+    render_dashboard_overview()
 
 
 def render_intensive() -> None:
