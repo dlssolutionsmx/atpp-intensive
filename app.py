@@ -171,6 +171,39 @@ def render_intensive() -> None:
 </script>
 """
     site_html = site_html.replace("</body>", intensive_override + "</body>")
+    st.markdown(
+        """
+        <style>
+          .intensive-streamlit-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            min-height: 58px;
+            padding: 8px 18px;
+            margin: -1rem 0 0.5rem;
+            border-bottom: 1px solid #dfe7ee;
+            background: #fff;
+            color: #0A2F5E;
+            font: 700 15px/1.2 Inter, Arial, sans-serif;
+          }
+          .intensive-streamlit-nav a {
+            display: inline-flex;
+            align-items: center;
+            padding: 9px 15px;
+            border-radius: 9px;
+            background: #0A2F5E;
+            color: #fff !important;
+            text-decoration: none !important;
+          }
+        </style>
+        <nav class="intensive-streamlit-nav" aria-label="Navegación de ATpp Intensive">
+          <span>ATpp Intensive</span>
+          <a href="?page=dashboard">← Inicio</a>
+        </nav>
+        """,
+        unsafe_allow_html=True,
+    )
     components.html(site_html, height=1200, scrolling=True)
 
 
