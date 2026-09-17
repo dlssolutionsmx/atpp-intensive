@@ -10,7 +10,7 @@ st.set_page_config(
     page_title="ATpp",
     page_icon="🎓",
     layout="wide",
-    initial_sidebar_state="collapsed",
+    initial_sidebar_state="expanded",
 )
 
 ROOT = Path(__file__).resolve().parent
@@ -66,7 +66,50 @@ def cargar_matriz_soluciones() -> list[dict]:
     return records
 
 
-def render_dashboard() -> None:
+def render_dashboard_sidebar(section: str) -> None:
+    st.sidebar.markdown("## ATpp")
+    st.sidebar.caption("MENÚ PRINCIPAL")
+    st.sidebar.markdown(
+        '<a class="native-sidebar-link active" href="?page=dashboard&section=dashboard">▦&nbsp;&nbsp; Dashboard</a>',
+        unsafe_allow_html=True,
+    )
+    st.sidebar.caption("PLANEACIÓN")
+    links = [
+        ("1. Diagnóstico", "diagnostico"),
+        ("2. Contenidos", "contenidos"),
+        ("3. Estrategias", "estrategias"),
+        ("4. Secuencia", "secuencia"),
+        ("5. Evaluación", "evaluacion"),
+        ("6. Evidencias", "evidencias"),
+    ]
+    for label, key in links:
+        active = " active" if section == key else ""
+        st.sidebar.markdown(
+            f'<a class="native-sidebar-link{active}" href="?page=dashboard&section={key}">{label}</a>',
+            unsafe_allow_html=True,
+        )
+    st.sidebar.markdown(
+        """
+        <style>
+          [data-testid="stSidebar"] { background: #061d32; }
+          [data-testid="stSidebar"] > div:first-child { padding-top: 1.2rem; }
+          [data-testid="stSidebar"] h2, [data-testid="stSidebar"] p,
+          [data-testid="stSidebar"] .stCaption { color: #d8e5f2; }
+          .native-sidebar-link {
+            display: block; padding: 10px 12px; margin: 3px 0;
+            border-radius: 10px; color: #9fb4c9 !important;
+            text-decoration: none !important; font-weight: 600;
+          }
+          .native-sidebar-link:hover, .native-sidebar-link.active {
+            background: #fff; color: #08263f !important;
+          }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def render_dashboard(section: str = "dashboard") -> None:
     if not DASHBOARD_FILE.exists():
         st.error("No se encontró dashboard.html")
         st.stop()
@@ -108,8 +151,22 @@ body { overflow-x: hidden; }
   }
   wireIntensiveButton();
   new MutationObserver(wireIntensiveButton).observe(document.body, {childList: true, subtree: true});
+  var requested = %s;
+  var labels = {
+    diagnostico: '1. Diagnóstico', contenidos: '2. Contenidos',
+    estrategias: '3. Estrategias', secuencia: '4. Secuencia',
+    evaluacion: '5. Evaluación', evidencias: '6. Evidencias',
+    dashboard: 'Dashboard'
+  };
+  if (requested && labels[requested]) {
+    setTimeout(function () {
+      document.querySelectorAll('button').forEach(function (button) {
+        if ((button.textContent || '').trim().replace(/\\s+/g, ' ') === labels[requested]) button.click();
+      });
+    }, 250);
+  }
 })();
-</script></body>""",
+</script></body>""" % json.dumps(section),
     )
     st.markdown(
         """
@@ -273,4 +330,6 @@ page = st.query_params.get("page", "dashboard")
 if page == "intensive":
     render_intensive()
 else:
-    render_dashboard()
+    section = st.query_params.get("section", "dashboard")
+    render_dashboard_sidebar(section)
+    render_dashboard(section)
