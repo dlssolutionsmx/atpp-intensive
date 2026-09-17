@@ -109,6 +109,40 @@ def render_dashboard_sidebar(section: str) -> None:
     )
 
 
+def render_dashboard_overview() -> None:
+    st.markdown(
+        """
+        <style>
+          .native-overview { padding: 8px 2px 18px; }
+          .native-overview h1 { color: #08263f; font-size: clamp(28px, 4vw, 46px); line-height: .98; margin: 0; }
+          .native-overview .lead { color: #0A2F5E; font-size: 17px; font-weight: 700; margin: 8px 0 18px; }
+          .native-overview .quick-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+          .native-overview .quick-card { display: block; min-height: 76px; padding: 18px; border: 1px solid #e1e7ed; border-radius: 16px; background: #fff; color: #08263f !important; text-decoration: none !important; box-shadow: 0 2px 8px rgba(8,38,63,.05); }
+          .native-overview .quick-card:hover { border-color: #18a957; transform: translateY(-1px); }
+          .native-overview .quick-card strong { display: block; font-size: 15px; margin-bottom: 5px; }
+          .native-overview .quick-card span { color: #5a6e8a; font-size: 12px; }
+          .native-overview .action-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+          .native-overview .action { display: inline-flex; align-items: center; justify-content: center; padding: 13px 20px; border-radius: 12px; background: #08263f; color: #fff !important; text-decoration: none !important; font-weight: 800; }
+          .native-overview .action.green { background: #04a84f; }
+          @media (max-width: 640px) { .native-overview .quick-grid { grid-template-columns: 1fr; } }
+        </style>
+        <section class="native-overview" aria-label="Panel de inicio nativo">
+          <h1>¡Maestro! ¡Buen día!</h1>
+          <div class="lead">¿En qué te apoyamos?</div>
+          <div class="quick-grid">
+            <a class="quick-card" href="?page=dashboard&section=diagnostico"><strong>¿Qué hacer hoy?</strong><span>Inicia o continúa el diagnóstico del grupo.</span></a>
+            <a class="quick-card" href="?page=dashboard&section=secuencia"><strong>¿Qué vamos a hacer mañana?</strong><span>Consulta la secuencia didáctica y sus tiempos.</span></a>
+          </div>
+          <div class="action-row">
+            <a class="action green" href="?page=intensive">ATpp Intensive&nbsp; →</a>
+            <a class="action" href="?page=dashboard&section=contenidos">Continuar&nbsp; →</a>
+          </div>
+        </section>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
 def render_dashboard(section: str = "dashboard") -> None:
     if not DASHBOARD_FILE.exists():
         st.error("No se encontró dashboard.html")
@@ -332,4 +366,6 @@ if page == "intensive":
 else:
     section = st.query_params.get("section", "dashboard")
     render_dashboard_sidebar(section)
+    if section == "dashboard":
+        render_dashboard_overview()
     render_dashboard(section)
