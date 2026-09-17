@@ -133,6 +133,7 @@ def render_intensive() -> None:
     )
     intensive_override = """
 <style>
+  .topbar { display: none !important; }
   #atpp { display: none !important; }
   #intensive { display: block !important; }
   .topbar .nav { display: flex !important; }
@@ -198,7 +199,7 @@ def render_intensive() -> None:
           }
         </style>
         <nav class="intensive-streamlit-nav" aria-label="Navegación de ATpp Intensive">
-          <span>ATpp Intensive</span>
+          <span><img src="data:image/png;base64,""" + base64.b64encode(ATPP_INTENSIVE_LOGO_FILE.read_bytes()).decode("ascii") + """" alt="ATpp Intensive" style="height:42px;width:auto;object-fit:contain;"></span>
           <a href="?page=dashboard">← Inicio</a>
         </nav>
         """,
