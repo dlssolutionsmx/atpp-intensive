@@ -464,18 +464,41 @@ def render_intensive() -> None:
     components.html(site_html, height=1200, scrolling=True)
 
 
+def render_main_dashboard() -> None:
+    """Renderiza únicamente el HTML principal adjunto en un iframe sin scroll interno."""
+    st.markdown(
+        """
+        <style>
+          [data-testid="stSidebar"] { display: none !important; }
+          [data-testid="stAppViewContainer"] .main .block-container,
+          [data-testid="stMainBlockContainer"] {
+            width: 100% !important;
+            max-width: none !important;
+            padding: 0 !important;
+          }
+          [data-testid="stIFrame"],
+          [data-testid="stIFrame"] iframe,
+          iframe[title="st.iframe"] {
+            display: block;
+            width: 100% !important;
+            max-width: none !important;
+          }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+    if not DASHBOARD_FILE.is_file():
+        st.error("No se encontró dashboard.html junto a app.py.")
+        st.stop()
+    components.html(
+        DASHBOARD_FILE.read_text(encoding="utf-8"),
+        height=3000,
+        scrolling=False,
+    )
+
+
 page = st.query_params.get("page", "dashboard")
 if page == "intensive":
     render_intensive()
 else:
-    section = st.query_params.get("section", "dashboard")
-    render_dashboard_sidebar(section)
-    if section == "dashboard":
-        render_dashboard_overview()
-    elif section in {"diagnostico", "contenidos", "estrategias"}:
-        render_native_planning(section)
-    elif section in {"secuencia", "evaluacion", "evidencias"}:
-        render_native_execution(section)
-    if section != "dashboard":
-        render_native_planning_summary()
-    render_dashboard(section)
+    render_main_dashboard()
