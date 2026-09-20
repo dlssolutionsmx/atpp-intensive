@@ -58,25 +58,100 @@ Entrega clara, sin relleno, defendible ante autoridad educativa.`;yp(v),Xe(!1)},
   <script>(function(){function m(a){var h=a.getAttribute("href");if(!h)return;try{var u=new URL(h,document.baseURI);if((u.protocol==="http:"||u.protocol==="https:")&&u.host!==location.host){a.target="_blank";a.rel="noopener noreferrer";}}catch(e){}}function s(){document.querySelectorAll("a[href]").forEach(m);}if(document.readyState!=="loading"){s();}else{document.addEventListener("DOMContentLoaded",s);}document.addEventListener("click",function(e){var a=e.target&&e.target.closest&&e.target.closest("a[href]");if(a){m(a);}},true);})();</script>
   
 
+
+
 <style id="atpp-streamlit-host-overrides">
   html, body { min-height: 100%; height: auto; overflow: visible !important; }
   body { margin: 0 !important; }
   #root { min-height: 100vh; height: auto; overflow: visible !important; }
+  #atpp-flow-launcher {
+    position: fixed; right: 18px; bottom: 18px; z-index: 100000;
+    border: 0; border-radius: 999px; padding: 12px 17px;
+    background: #0A1930; color: #fff; font: 800 13px/1 Inter, Arial, sans-serif;
+    box-shadow: 0 8px 24px rgba(10,25,48,.28); cursor: pointer;
+  }
+  #atpp-flow-launcher:hover { background: #16A34A; }
+  #atpp-flow-shell {
+    display: none; position: relative; z-index: 99990; width: min(1280px, calc(100% - 32px));
+    margin: 28px auto 70px; color: #111827; font-family: Inter, Arial, sans-serif;
+  }
+  #atpp-flow-shell.open { display: block; }
+  .atpp-flow-card { background: #fff; border: 1px solid #E5E7EB; border-radius: 20px; box-shadow: 0 12px 32px rgba(10,25,48,.12); padding: 22px; }
+  .atpp-flow-head { display:flex; align-items:flex-start; justify-content:space-between; gap:14px; margin-bottom:16px; }
+  .atpp-flow-head h2 { margin:0; color:#0A1930; font-size:22px; }
+  .atpp-flow-head p { margin:5px 0 0; color:#64748B; font-size:12px; }
+  .atpp-flow-close { border:1px solid #E5E7EB; background:#fff; border-radius:10px; padding:8px 12px; cursor:pointer; font-weight:700; }
+  .atpp-flow-steps { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:8px; margin-bottom:18px; }
+  .atpp-flow-step { border:1px solid #D9E2EC; background:#F8FAFC; color:#334155; border-radius:12px; padding:10px 8px; text-align:left; cursor:pointer; font-size:11px; font-weight:800; }
+  .atpp-flow-step.active { background:#0A1930; border-color:#0A1930; color:#fff; }
+  .atpp-flow-step.done { border-color:#16A34A; }
+  .atpp-flow-step small { display:block; opacity:.72; font-weight:600; margin-top:4px; }
+  .atpp-flow-grid { display:grid; grid-template-columns:minmax(0,1.15fr) minmax(250px,.85fr); gap:18px; }
+  .atpp-flow-panel { border:1px solid #EEF1F4; border-radius:16px; padding:18px; background:#fff; }
+  .atpp-flow-panel h3 { margin:0 0 6px; color:#0A1930; font-size:18px; }
+  .atpp-flow-panel .hint { margin:0 0 15px; color:#64748B; font-size:12px; line-height:1.45; }
+  .atpp-flow-form { display:grid; gap:12px; }
+  .atpp-flow-form label { display:grid; gap:5px; color:#334155; font-size:12px; font-weight:800; }
+  .atpp-flow-form input, .atpp-flow-form textarea, .atpp-flow-form select { width:100%; box-sizing:border-box; border:1px solid #CBD5E1; border-radius:10px; padding:10px; font:inherit; color:#111827; background:#fff; }
+  .atpp-flow-form textarea { min-height:90px; resize:vertical; }
+  .atpp-flow-checks { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+  .atpp-flow-check { display:flex; align-items:center; gap:8px; padding:10px; border:1px solid #E2E8F0; border-radius:10px; font-size:12px; }
+  .atpp-flow-check input { width:auto; }
+  .atpp-flow-summary { display:grid; gap:8px; }
+  .atpp-flow-summary div { padding:11px 12px; background:#F8FAFC; border-radius:10px; border-left:3px solid #16A34A; }
+  .atpp-flow-summary strong { display:block; font-size:11px; color:#64748B; text-transform:uppercase; letter-spacing:.04em; }
+  .atpp-flow-summary span { display:block; margin-top:4px; font-size:13px; color:#0F172A; line-height:1.35; }
+  .atpp-flow-actions { display:flex; justify-content:space-between; gap:10px; margin-top:18px; }
+  .atpp-flow-actions button { border:0; border-radius:10px; padding:11px 16px; font-weight:800; cursor:pointer; }
+  .atpp-flow-actions .back { background:#F1F5F9; color:#334155; }
+  .atpp-flow-actions .next { background:#16A34A; color:#fff; }
+  .atpp-flow-actions .save { background:#0A1930; color:#fff; }
+  @media (max-width: 780px) { .atpp-flow-steps { grid-template-columns:repeat(3,minmax(0,1fr)); } .atpp-flow-grid { grid-template-columns:1fr; } .atpp-flow-checks { grid-template-columns:1fr; } }
 </style>
 <script>
 (function () {
-  function routeIntensive(event) {
-    var button = event.target && event.target.closest && event.target.closest('button');
-    if (!button || button.textContent.trim() !== 'ATpp Intensive') return;
-    event.preventDefault();
-    event.stopPropagation();
-    try {
-      window.top.location.href = new URL('?page=intensive', window.top.location.href).href;
-    } catch (_) {
-      window.location.href = '?page=intensive';
-    }
+  'use strict';
+  var steps = [
+    {id:'diagnostico', title:'1. Diagnóstico', sub:'Grupo y necesidades'},
+    {id:'contenidos', title:'2. Contenidos', sub:'Campo, PDA y propósito'},
+    {id:'estrategias', title:'3. Estrategias', sub:'Metodología situada'},
+    {id:'secuencia', title:'4. Secuencia', sub:'Inicio, desarrollo y cierre'},
+    {id:'evaluacion', title:'5. Evaluación', sub:'Criterios y evidencias'},
+    {id:'evidencias', title:'6. Evidencias', sub:'Productos y seguimiento'}
+  ];
+  var state = {step:0, data:{}};
+  try { state.data = JSON.parse(localStorage.getItem('atpp-flow-state') || '{}'); } catch (_) {}
+  function esc(v) { return String(v == null ? '' : v).replace(/[&<>"']/g, function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+  function save() { try { localStorage.setItem('atpp-flow-state', JSON.stringify(state.data)); } catch (_) {} }
+  function val(id, fallback) { return esc(state.data[id] || fallback || ''); }
+  function checked(id, option) { return (state.data[id] || []).indexOf(option) >= 0 ? ' checked' : ''; }
+  function form(step) {
+    if (step === 0) return '<label>Grupo<input data-field="grupo" value="'+val('grupo','3° A')+'" placeholder="Ej. 3° A"></label><label>Contexto<select data-field="contexto"><option>Urbano</option><option>Rural</option><option>Indígena</option><option>Multigrado</option></select></label><label>Fortalezas observadas<textarea data-field="fortalezas" placeholder="¿Qué sabe hacer el grupo?">'+val('fortalezas')+'</textarea></label><label>Necesidades prioritarias<textarea data-field="necesidades" placeholder="¿Qué necesita atenderse primero?">'+val('necesidades')+'</textarea></label>';
+    if (step === 1) return '<label>Campo formativo<select data-field="campo"><option>Lenguajes</option><option>Saberes y Pensamiento Científico</option><option>Ética, Naturaleza y Sociedades</option><option>De lo Humano y lo Comunitario</option></select></label><label>Contenido<input data-field="contenido" value="'+val('contenido','Producción e interpretación de textos')+'"></label><label>PDA seleccionado<textarea data-field="pda" placeholder="Pega o selecciona el PDA específico">'+val('pda')+'</textarea></label><label>Finalidad pedagógica relacionada<input data-field="finalidad" value="'+val('finalidad')+'" placeholder="Opcional"></label>';
+    if (step === 2) return '<div class="atpp-flow-checks"><label class="atpp-flow-check"><input type="checkbox" data-array="estrategias" value="ABP"'+checked('estrategias','ABP')+'> Aprendizaje Basado en Proyectos</label><label class="atpp-flow-check"><input type="checkbox" data-array="estrategias" value="Estaciones"'+checked('estrategias','Estaciones')+'> Trabajo por estaciones</label><label class="atpp-flow-check"><input type="checkbox" data-array="estrategias" value="Tutoría entre pares"'+checked('estrategias','Tutoría entre pares')+'> Tutoría entre pares</label><label class="atpp-flow-check"><input type="checkbox" data-array="estrategias" value="Cooperativo"'+checked('estrategias','Cooperativo')+'> Aprendizaje cooperativo</label></div><label>Justificación docente<textarea data-field="justificacion" placeholder="¿Por qué esta estrategia responde al PDA y al diagnóstico?">'+val('justificacion')+'</textarea></label>';
+    if (step === 3) return '<label>Inicio (minutos)<input type="number" data-field="inicio" value="'+val('inicio','20')+'" min="5"></label><label>Desarrollo (minutos)<input type="number" data-field="desarrollo" value="'+val('desarrollo','60')+'" min="10"></label><label>Cierre (minutos)<input type="number" data-field="cierre" value="'+val('cierre','20')+'" min="5"></label><label>Actividades clave<textarea data-field="actividades" placeholder="Activación, construcción, aplicación y socialización">'+val('actividades')+'</textarea></label>';
+    if (step === 4) return '<label>Instrumento principal<select data-field="instrumento"><option>Rúbrica</option><option>Lista de cotejo</option><option>Guía de observación</option><option>Autoevaluación</option><option>Coevaluación</option></select></label><div class="atpp-flow-checks"><label class="atpp-flow-check"><input type="checkbox" data-array="criterios" value="Comprensión"'+checked('criterios','Comprensión')+'> Comprensión</label><label class="atpp-flow-check"><input type="checkbox" data-array="criterios" value="Producción"'+checked('criterios','Producción')+'> Producción</label><label class="atpp-flow-check"><input type="checkbox" data-array="criterios" value="Colaboración"'+checked('criterios','Colaboración')+'> Colaboración</label><label class="atpp-flow-check"><input type="checkbox" data-array="criterios" value="Comunicación"'+checked('criterios','Comunicación')+'> Comunicación</label></div><label>Retroalimentación<textarea data-field="retroalimentacion" placeholder="¿Cómo se dará retroalimentación formativa?">'+val('retroalimentacion')+'</textarea></label>';
+    return '<label>Producto o evidencia esperada<textarea data-field="producto" placeholder="Producto final, registro, desempeño o explicación">'+val('producto')+'</textarea></label><label>Recursos necesarios<input data-field="recursos" value="'+val('recursos','Cuaderno, textos y materiales de aula')+'"></label><label>Responsable y momento de seguimiento<input data-field="seguimiento" value="'+val('seguimiento','Docente titular · cierre de la sesión')+'"></label><label>Observaciones<textarea data-field="observaciones">'+val('observaciones')+'</textarea></label>';
   }
-  document.addEventListener('click', routeIntensive, true);
+  function summary() {
+    return '<div><strong>Diagnóstico</strong><span>'+esc(state.data.grupo || 'Sin grupo')+' · '+esc(state.data.necesidades || 'Sin necesidad registrada')+'</span></div><div><strong>Contenido y PDA</strong><span>'+esc(state.data.campo || 'Sin campo')+' · '+esc(state.data.contenido || 'Sin contenido')+'</span></div><div><strong>Estrategia</strong><span>'+esc((state.data.estrategias || []).join(', ') || 'Sin estrategia')+'</span></div><div><strong>Secuencia</strong><span>'+esc(state.data.inicio || '—')+' + '+esc(state.data.desarrollo || '—')+' + '+esc(state.data.cierre || '—')+' minutos</span></div><div><strong>Evaluación y evidencia</strong><span>'+esc(state.data.instrumento || 'Sin instrumento')+' · '+esc(state.data.producto || 'Sin producto')+'</span></div>';
+  }
+  function render() {
+    var shell = document.getElementById('atpp-flow-shell'); if (!shell) return;
+    var s = steps[state.step];
+    shell.innerHTML = '<div class="atpp-flow-card"><div class="atpp-flow-head"><div><h2>Ruta de planeación ATpp</h2><p>Flujo completo conectado: diagnóstico → PDA → estrategia → secuencia → evaluación → evidencia.</p></div><button class="atpp-flow-close" data-action="close">Cerrar</button></div><div class="atpp-flow-steps">'+steps.map(function(x,i){return '<button class="atpp-flow-step '+(i===state.step?'active ':'')+(state.data[x.id+'_done']?'done':'')+'" data-step="'+i+'">'+x.title+'<small>'+x.sub+'</small></button>';}).join('')+'</div><div class="atpp-flow-grid"><section class="atpp-flow-panel"><h3>'+s.title+'</h3><p class="hint">'+s.sub+'. Completa esta etapa y continúa; la información queda guardada en este navegador.</p><div class="atpp-flow-form">'+form(state.step)+'</div><div class="atpp-flow-actions"><button class="back" data-action="back">← Atrás</button><button class="save" data-action="save">Guardar avance</button><button class="next" data-action="next">'+(state.step===steps.length-1?'Finalizar':'Siguiente')+' →</button></div></section><aside class="atpp-flow-panel"><h3>Resumen conectado</h3><p class="hint">Relaciones que alimentan las siguientes decisiones.</p><div class="atpp-flow-summary">'+summary()+'</div></aside></div></div>';
+    var selects = shell.querySelectorAll('select[data-field]'); selects.forEach(function(el){el.value=state.data[el.getAttribute('data-field')] || el.options[0].value;});
+  }
+  function collect() {
+    var shell = document.getElementById('atpp-flow-shell');
+    shell.querySelectorAll('[data-field]').forEach(function(el){state.data[el.getAttribute('data-field')] = el.value;});
+    shell.querySelectorAll('[data-array]').forEach(function(el){var k=el.getAttribute('data-array'); if(!state.data[k])state.data[k]=[]; if(el.checked && state.data[k].indexOf(el.value)<0)state.data[k].push(el.value); if(!el.checked)state.data[k]=state.data[k].filter(function(x){return x!==el.value;});});
+    state.data[steps[state.step].id+'_done'] = true; save();
+  }
+  function open(step) { state.step = typeof step === 'number' ? step : state.step; var shell=document.getElementById('atpp-flow-shell'); shell.classList.add('open'); render(); shell.scrollIntoView({behavior:'smooth',block:'start'}); }
+  function routeIntensive(event) { var button=event.target && event.target.closest && event.target.closest('button'); if(!button)return; var text=(button.textContent||'').replace(/\s+/g,' ').trim(); if(text.indexOf('ATpp Intensive')===0){event.preventDefault();event.stopPropagation(); try{window.top.location.href=new URL('?page=intensive',window.top.location.href).href;}catch(_){window.location.href='?page=intensive';} return;} if(text.indexOf('Continuar Planeación')===0){event.preventDefault();event.stopPropagation();open(1);} }
+  function boot() { if(document.getElementById('atpp-flow-launcher'))return; var launcher=document.createElement('button'); launcher.id='atpp-flow-launcher'; launcher.textContent='Ruta de planeación 1–6'; launcher.setAttribute('aria-label','Abrir ruta completa de planeación'); launcher.addEventListener('click',function(){open(0);}); document.body.appendChild(launcher); var shell=document.createElement('div'); shell.id='atpp-flow-shell'; document.body.appendChild(shell); document.addEventListener('click',function(e){var a=e.target.closest && e.target.closest('[data-action]'); if(a){var action=a.getAttribute('data-action'); if(action==='close'){document.getElementById('atpp-flow-shell').classList.remove('open');return;} collect(); if(action==='back')state.step=Math.max(0,state.step-1); if(action==='next')state.step=Math.min(steps.length-1,state.step+1); if(action==='save'){} render(); return;} var step=e.target.closest && e.target.closest('[data-step]'); if(step){collect();state.step=Number(step.getAttribute('data-step'));render();return;} routeIntensive(e); },true); }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
 </script>
 </body>
