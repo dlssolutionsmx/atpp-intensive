@@ -431,6 +431,21 @@ def render_intensive() -> None:
     st.markdown(
         """
         <style>
+          [data-testid="stAppViewContainer"] .main .block-container,
+          [data-testid="stMainBlockContainer"] {
+            width: 100% !important;
+            max-width: none !important;
+            padding: 0 !important;
+          }
+          [data-testid="stIFrame"],
+          [data-testid="stIFrame"] iframe,
+          iframe[title="st.iframe"] {
+            display: block;
+            width: 100% !important;
+            max-width: none !important;
+            height: 6000px !important;
+            border: 0 !important;
+          }
           .intensive-streamlit-nav {
             display: flex;
             align-items: center;
@@ -461,7 +476,7 @@ def render_intensive() -> None:
         """,
         unsafe_allow_html=True,
     )
-    components.html(site_html, height=1200, scrolling=True)
+    components.html(site_html, height=6000, scrolling=False)
 
 
 def render_main_dashboard() -> None:
