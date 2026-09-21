@@ -389,7 +389,7 @@ def render_intensive() -> None:
     )
     intensive_override = """
 <style>
-  .topbar { display: none !important; }
+  .topbar { display: block !important; }
   #atpp { display: none !important; }
   #intensive { display: block !important; }
   .topbar .nav { display: flex !important; }
@@ -510,7 +510,7 @@ def render_main_dashboard() -> None:
     dashboard_floor = f"""
     <style id="atpp-main-floor">
       html, body {{ min-height: 100%; height: auto; overflow-x: hidden; overflow-y: visible !important; }}
-      body {{ display: flex; flex-direction: column; }}
+          body {{ min-height: 100vh; display: flex; flex-direction: column; }}
       #root {{ flex: 0 0 auto; min-height: calc(100vh - 86px); }}
       .atpp-correct-menu-logo {{
         position: fixed; left: 0; top: 42px; z-index: 100001;
