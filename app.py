@@ -546,6 +546,11 @@ def render_main_dashboard() -> None:
           }} else if (current.src !== uri) {{
             current.src = uri;
           }}
+          Array.from(menu.children).forEach(function(child) {{
+            if (child === holder) return;
+            var text = (child.innerText || '').trim();
+            if (/ATpp|logo/i.test(text) && !/Dashboard|MENÚ PRINCIPAL|PLANEACIÓN/i.test(text)) child.remove();
+          }});
           menu.querySelectorAll('img').forEach(function(img) {{ if (!holder.contains(img)) img.remove(); }});
         }}
         replaceMenuLogo();
