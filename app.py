@@ -14,8 +14,8 @@ st.set_page_config(
 )
 
 ROOT = Path(__file__).resolve().parent
-DASHBOARD_FILE = ROOT / "index.html"
-SITE_FILE = ROOT / "intensive.html"
+DASHBOARD_FILE = ROOT / "dashboard.html"
+SITE_FILE = ROOT / "site.html"
 MATRIX_FILE = ROOT / "matriz-pda-problemas-v2.xlsx"
 SOLUTIONS_FILE = ROOT / "matriz-soluciones-pmc.xlsx"
 LINKS_FILE = ROOT / "objeto_tablas_enlaces.json"
@@ -517,7 +517,7 @@ def render_main_dashboard() -> None:
         unsafe_allow_html=True,
     )
     if not DASHBOARD_FILE.is_file():
-        st.error("No se encontró index.html junto a app.py.")
+        st.error("No se encontró dashboard.html junto a app.py.")
         st.stop()
     dashboard_html = DASHBOARD_FILE.read_text(encoding="utf-8")
     main_logo_uri = "data:image/png;base64," + base64.b64encode(ATPP_MAIN_LOGO_FILE.read_bytes()).decode("ascii")
