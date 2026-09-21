@@ -419,15 +419,14 @@ def render_intensive() -> None:
 <script>
 (function () {
   document.title = 'ATpp Intensive — Fases y talleres intensivos';
+  var homeUrl = 'https://atpp-intensiva.streamlit.app/?page=dashboard';
   var nav = document.querySelector('.topbar .nav');
   if (nav) {
-    var homeUrl = new URL(window.top.location.href);
-    homeUrl.search = '?page=dashboard';
-    nav.innerHTML = '<a class="home-link" href="' + homeUrl.href + '">← Inicio</a>';
+    nav.innerHTML = '<a class="home-link" href="' + homeUrl + '">← Inicio</a>';
     nav.setAttribute('aria-label', 'Navegación de ATpp Intensive');
     nav.querySelector('.home-link').addEventListener('click', function (event) {
       event.preventDefault();
-      window.top.location.assign(homeUrl.href);
+      window.top.location.assign(homeUrl);
     });
   }
   var back = document.querySelector('.back-atpp');
@@ -435,7 +434,7 @@ def render_intensive() -> None:
     back.textContent = '← Volver al dashboard';
     back.addEventListener('click', function (event) {
       event.preventDefault();
-      window.top.location.href = '?page=dashboard';
+      window.top.location.href = homeUrl;
     });
   }
 })();
