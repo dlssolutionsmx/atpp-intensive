@@ -443,7 +443,7 @@ def render_intensive() -> None:
             display: block;
             width: 100% !important;
             max-width: none !important;
-            height: 6000px !important;
+            height: 3600px !important;
             border: 0 !important;
           }
           .intensive-streamlit-nav {
@@ -476,7 +476,7 @@ def render_intensive() -> None:
         """,
         unsafe_allow_html=True,
     )
-    components.html(site_html, height=6000, scrolling=False)
+    components.html(site_html, height=3600, scrolling=False)
 
 
 def render_main_dashboard() -> None:
@@ -511,9 +511,9 @@ def render_main_dashboard() -> None:
     dashboard_html = dashboard_html.replace("__ATPP_MAIN_LOGO_DATA_URI__", main_logo_uri).replace("__ATPP_INTENSIVE_LOGO_DATA_URI__", intensive_logo_uri)
     dashboard_floor = f"""
     <style id="atpp-main-floor">
-      html, body {{ min-height: 100%; height: auto; overflow-x: hidden; overflow-y: visible !important; }}
-          body {{ min-height: 100vh; display: flex; flex-direction: column; }}
-      #root {{ flex: 0 0 auto; min-height: calc(100vh - 86px); }}
+      html, body {{ height: auto; overflow-x: hidden; overflow-y: visible !important; }}
+      body {{ display: flex; flex-direction: column; }}
+      #root {{ flex: 0 0 auto; }}
       .atpp-dashboard-floor {{
         flex: 0 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 18px;
         min-height: 86px; padding: 16px 28px; box-sizing: border-box;
@@ -527,6 +527,26 @@ def render_main_dashboard() -> None:
         .atpp-dashboard-floor {{ flex-direction: column; align-items: flex-start; padding: 14px 18px; }}
       }}
     </style>
+    <script>
+      (function() {{
+        var uri = "{main_logo_uri}";
+        function replaceMenuLogo() {{
+          var menu = document.getElementById('atpp-menu') || document.querySelector('aside');
+          if (!menu) return;
+          var holder = document.getElementById('atpp-menu-logo');
+          if (!holder || !menu.contains(holder)) {{
+            holder = document.createElement('div');
+            holder.id = 'atpp-menu-logo';
+            holder.style.cssText = 'padding:6px 10px 22px;border-bottom:1px solid #dfe7ee;margin-bottom:14px;';
+            menu.insertBefore(holder, menu.firstChild);
+          }}
+          holder.innerHTML = '<img src="' + uri + '" alt="ATpp Sticker" style="width:205px;height:48px;object-fit:contain;object-position:left">';
+          menu.querySelectorAll('img').forEach(function(img) {{ if (!holder.contains(img)) img.remove(); }});
+        }}
+        replaceMenuLogo();
+        new MutationObserver(replaceMenuLogo).observe(document.body, {{childList:true,subtree:true}});
+      }})();
+    </script>
     <footer class="atpp-dashboard-floor" aria-label="Piso de ATpp Intensive">
       <img src="{main_logo_uri}" alt="ATpp Sticker">
       <div><strong>ATpp Intensive</strong><small>Piso de acompañamiento · Hecho por maestros, para maestros.</small></div>
@@ -535,7 +555,7 @@ def render_main_dashboard() -> None:
     dashboard_html = dashboard_html.replace("</body>", dashboard_floor + "</body>", 1)
     components.html(
         dashboard_html,
-        height=3000,
+        height=1900,
         scrolling=False,
     )
 
