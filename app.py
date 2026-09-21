@@ -505,8 +505,53 @@ def render_main_dashboard() -> None:
     if not DASHBOARD_FILE.is_file():
         st.error("No se encontró dashboard.html junto a app.py.")
         st.stop()
+    dashboard_html = DASHBOARD_FILE.read_text(encoding="utf-8")
+    main_logo_uri = "data:image/png;base64," + base64.b64encode(ATPP_MAIN_LOGO_FILE.read_bytes()).decode("ascii")
+    dashboard_floor = f"""
+    <style id="atpp-main-floor">
+      html, body {{ min-height: 100%; height: auto; overflow-x: hidden; overflow-y: visible !important; }}
+      body {{ display: flex; flex-direction: column; }}
+      #root {{ flex: 0 0 auto; min-height: calc(100vh - 86px); }}
+      .atpp-correct-menu-logo {{
+        position: fixed; left: 14px; top: 74px; z-index: 100001;
+        width: 218px; height: 76px; display: grid; place-items: center;
+        padding: 8px 12px; box-sizing: border-box; border-radius: 0 0 14px 14px;
+        background: #061d32; box-shadow: 0 8px 18px rgba(0,0,0,.12);
+      }}
+      .atpp-correct-menu-logo img {{ width: 100%; height: 58px; object-fit: contain; object-position: left center; }}
+      .atpp-dashboard-floor {{
+        flex: 0 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 18px;
+        min-height: 86px; padding: 16px 28px; box-sizing: border-box;
+        background: #061d32; color: #d8e5f2; border-top: 4px solid #2E9E4A;
+        font: 600 12px/1.4 Inter, Arial, sans-serif;
+      }}
+      .atpp-dashboard-floor img {{ width: 190px; height: 48px; object-fit: contain; object-position: left center; }}
+      .atpp-dashboard-floor strong {{ color: #fff; font-size: 14px; }}
+      .atpp-dashboard-floor small {{ display: block; color: #a9d994; margin-top: 3px; }}
+      @media(max-width:680px) {{
+        .atpp-correct-menu-logo {{ left: 8px; top: 64px; width: 176px; height: 64px; }}
+        .atpp-correct-menu-logo img {{ height: 48px; }}
+        .atpp-dashboard-floor {{ flex-direction: column; align-items: flex-start; padding: 14px 18px; }}
+      }}
+    </style>
+    <script>
+      (function() {{
+        if (document.querySelector('.atpp-correct-menu-logo')) return;
+        var logo = document.createElement('div');
+        logo.className = 'atpp-correct-menu-logo';
+        logo.setAttribute('aria-label', 'Logo ATpp');
+        logo.innerHTML = '<img src="{main_logo_uri}" alt="ATpp Sticker">';
+        document.body.appendChild(logo);
+      }})();
+    </script>
+    <footer class="atpp-dashboard-floor" aria-label="Piso de ATpp Intensive">
+      <img src="{main_logo_uri}" alt="ATpp Sticker">
+      <div><strong>ATpp Intensive</strong><small>Piso de acompañamiento · Hecho por maestros, para maestros.</small></div>
+    </footer>
+    """
+    dashboard_html = dashboard_html.replace("</body>", dashboard_floor + "</body>", 1)
     components.html(
-        DASHBOARD_FILE.read_text(encoding="utf-8"),
+        dashboard_html,
         height=3000,
         scrolling=False,
     )
