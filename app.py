@@ -395,6 +395,11 @@ def render_intensive() -> None:
   .topbar .nav { display: flex !important; }
   .topbar .mobile-toggle, .topbar .demo { display: none !important; }
   .topbar .brand { pointer-events: none; }
+  html, body { min-height: 0 !important; height: auto !important; overflow: visible !important; }
+  body { display: block !important; }
+  body > main, #atpp-layout { min-height: 0 !important; height: auto !important; }
+  body > main { flex: none !important; }
+  .authority-footer { margin-top: 0 !important; }
   .topbar .nav .home-link {
     display: inline-flex;
     align-items: center;
@@ -413,8 +418,14 @@ def render_intensive() -> None:
   document.title = 'ATpp Intensive — Fases y talleres intensivos';
   var nav = document.querySelector('.topbar .nav');
   if (nav) {
-    nav.innerHTML = '<a class="home-link" href="' + new URL('?page=dashboard', window.top.location.href).href + '" target="_top" rel="noopener">← Inicio</a>';
+    var homeUrl = new URL(window.top.location.href);
+    homeUrl.search = '?page=dashboard';
+    nav.innerHTML = '<a class="home-link" href="' + homeUrl.href + '">← Inicio</a>';
     nav.setAttribute('aria-label', 'Navegación de ATpp Intensive');
+    nav.querySelector('.home-link').addEventListener('click', function (event) {
+      event.preventDefault();
+      window.top.location.assign(homeUrl.href);
+    });
   }
   var back = document.querySelector('.back-atpp');
   if (back) {
@@ -443,7 +454,7 @@ def render_intensive() -> None:
             display: block;
             width: 100% !important;
             max-width: none !important;
-            height: 3600px !important;
+            height: 2500px !important;
             border: 0 !important;
           }
           .intensive-streamlit-nav {
@@ -476,7 +487,7 @@ def render_intensive() -> None:
         """,
         unsafe_allow_html=True,
     )
-    components.html(site_html, height=3600, scrolling=False)
+    components.html(site_html, height=2500, scrolling=False)
 
 
 def render_main_dashboard() -> None:
@@ -573,7 +584,7 @@ def render_main_dashboard() -> None:
     dashboard_html = dashboard_html.replace("</body>", dashboard_floor + "</body>", 1)
     components.html(
         dashboard_html,
-        height=1900,
+            height=1500,
         scrolling=False,
     )
 
