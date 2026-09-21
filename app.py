@@ -395,7 +395,7 @@ def render_intensive() -> None:
   .topbar .nav { display: flex !important; }
   .topbar .mobile-toggle, .topbar .demo { display: none !important; }
   .topbar .brand { pointer-events: none; }
-  html, body { min-height: 0 !important; height: auto !important; overflow: visible !important; }
+  html, body { min-height: 0 !important; height: auto !important; overflow: hidden !important; }
   body { display: block !important; }
   body > main, #atpp-layout { min-height: 0 !important; height: auto !important; }
   body > main { flex: none !important; }
@@ -522,7 +522,7 @@ def render_main_dashboard() -> None:
     dashboard_html = dashboard_html.replace("__ATPP_MAIN_LOGO_DATA_URI__", main_logo_uri).replace("__ATPP_INTENSIVE_LOGO_DATA_URI__", intensive_logo_uri)
     dashboard_floor = f"""
     <style id="atpp-main-floor">
-      html, body {{ height: auto; overflow-x: hidden; overflow-y: visible !important; }}
+      html, body {{ height: auto; overflow: hidden !important; }}
       body {{ display: flex; flex-direction: column; }}
       #root {{ flex: 0 0 auto; }}
       .atpp-dashboard-floor {{
