@@ -217,12 +217,8 @@ Entrega clara, sin relleno, defendible ante autoridad educativa.`;yp(v),Xe(!1)},
   modal.classList.add('atpp-integrated-submodule');
   var mountedCentral = null;
   function findCentralColumn() {
-    var main = document.querySelector('main');
-    if (!main) return null;
-    var shell = main.firstElementChild;
-    if (!shell) return null;
-    var layout = Array.from(shell.children).find(function(el){ return el.classList.contains('grid'); });
-    return layout && layout.firstElementChild ? layout.firstElementChild : null;
+    var candidates = Array.from(document.querySelectorAll('div'));
+    return candidates.find(function(el){ return el.classList.contains('max-w-[700px]'); }) || null;
   }
   function mountSubmodule() {
     var central = findCentralColumn();
