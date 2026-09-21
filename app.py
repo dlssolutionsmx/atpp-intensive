@@ -551,6 +551,14 @@ def render_main_dashboard() -> None:
             var text = (child.innerText || '').trim();
             if (/ATpp|logo/i.test(text) && !/Dashboard|MENÚ PRINCIPAL|PLANEACIÓN/i.test(text)) child.remove();
           }});
+          var dashboardLink = Array.from(menu.querySelectorAll('a,button')).find(function(el) {{ return /Dashboard/i.test(el.textContent || ''); }});
+          if (dashboardLink) {{
+            var navBlock = dashboardLink;
+            while (navBlock.parentElement && navBlock.parentElement !== menu) navBlock = navBlock.parentElement;
+            var children = Array.from(menu.children);
+            var navIndex = children.indexOf(navBlock);
+            if (navIndex > 0) children.slice(0, navIndex).forEach(function(child) {{ if (child !== holder) child.remove(); }});
+          }}
           menu.querySelectorAll('img').forEach(function(img) {{ if (!holder.contains(img)) img.remove(); }});
         }}
         replaceMenuLogo();
