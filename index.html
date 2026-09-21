@@ -232,6 +232,7 @@ Entrega clara, sin relleno, defendible ante autoridad educativa.`;yp(v),Xe(!1)},
     if(text==='4. Secuencia' || text.indexOf('4. Secuencia didáctica')===0){e.preventDefault();e.stopImmediatePropagation();openView('secuencia');}
     else if(text==='5. Evaluación' || text.indexOf('5. Evaluación')===0){e.preventDefault();e.stopImmediatePropagation();openView('evaluacion');}
     else if(text==='6. Evidencias' || text.indexOf('6. Evidencias')===0){e.preventDefault();e.stopImmediatePropagation();openView('evidencias');}
+    else if(modal.classList.contains('open')){closeView();}
   }, true);
 })();
 </script>
