@@ -189,16 +189,6 @@ Entrega clara, sin relleno, defendible ante autoridad educativa.`;yp(v),Xe(!1)},
         + '<article><span class="atpp-integrated-kicker">Recursos didácticos</span><h3>Recursos sugeridos por ATpp</h3><ul><li>Libro de texto Lenguajes Pág. 42-48</li><li>Fichas de organizador gráfico</li><li>Rúbrica analítica MEJOREDU</li></ul></article>'
         + '</div><div class="atpp-integrated-resource-row"><strong>Evidencias sugeridas por ATpp (3)</strong><span>Rúbrica editable de escritura</span><span>Lista de cotejo por estaciones</span><span>Carpeta de evidencias lista</span></div>'
     },
-    multigrado: {
-      match: 'Configuración',
-      title: 'Configuración · Docente Multigrado',
-      intro: 'Subconfiguración derivada de Tipo docente (contexto activo): Docente Multigrado.',
-      body: '<div class="atpp-multigrado-card"><div class="atpp-multigrado-heading"><span class="atpp-multigrado-check">✓</span><div><h3>Modo Multigrado</h3><p>Como especialista puedes atender múltiples grados/grupos en la misma escuela. Agrega grupos abajo:</p></div></div>'
-        + '<div class="atpp-multigrado-section"><strong>Grado principal</strong><div class="atpp-grade-options" data-grade-options="principal"></div><div class="atpp-grade-summary"><span><b>13</b> Hombres</span><span><b>13</b> Mujeres</span><span><b>26</b> Total</span></div></div>'
-        + '<div class="atpp-multigrado-divider"></div><div class="atpp-multigrado-warning">Multigrado: Escuela Unitaria/Bidocente. Si necesitas otro grado/grupo, → agrega nuevo Grado/Grupo. Si necesitas otra escuela/turno → agrega nuevo contexto.</div>'
-        + '<div class="atpp-multigrado-section"><strong>Grado (Otro)</strong><div class="atpp-grade-options" data-grade-options="otro"></div></div>'
-        + '<div class="atpp-integrated-actions"><button data-integrated-action="save-multigrado">Guardar configuración multigrado</button><button class="secondary" data-integrated-action="cancel">Cancelar</button></div></div>'
-    }
   };
   var styles = '<style id="atpp-requested-subpages-style">'
     + '#atpp-integrated-subpage{display:none;position:relative;z-index:1;background:#F8FAFC;border-top:1px solid #E2E8F0;padding:clamp(18px,3vw,34px) clamp(14px,3vw,42px);overflow:visible;scroll-margin-top:18px}'
@@ -208,7 +198,7 @@ Entrega clara, sin relleno, defendible ante autoridad educativa.`;yp(v),Xe(!1)},
     + '@media(max-width:760px){.atpp-integrated-grid{grid-template-columns:1fr}.atpp-integrated-head{flex-direction:column}.atpp-integrated-close{align-self:flex-end}}'
     + '</style>';
   document.head.insertAdjacentHTML('beforeend', styles);
-  document.head.insertAdjacentHTML('beforeend', '<style id="atpp-integrated-submodule-style">#atpp-integrated-subpage.atpp-integrated-submodule{min-height:100%;height:auto}.atpp-central-hidden{display:none!important}#atpp-integrated-subpage.atpp-integrated-submodule .atpp-integrated-close{white-space:nowrap}@media(max-width:760px){#atpp-integrated-subpage.atpp-integrated-submodule{padding:14px 10px}}</style>');
+  document.head.insertAdjacentHTML('beforeend', '<style id="atpp-integrated-submodule-style">#atpp-integrated-subpage.atpp-integrated-submodule{min-height:100%;height:auto;background:transparent;border:0;padding:0}.atpp-central-hidden{display:none!important}#atpp-integrated-subpage .atpp-integrated-dialog{width:100%;max-width:1280px;margin:0 auto;background:transparent;border:0;border-radius:0;box-shadow:none;padding:0}#atpp-integrated-subpage.atpp-integrated-submodule .atpp-integrated-close{white-space:nowrap}@media(max-width:760px){#atpp-integrated-subpage.atpp-integrated-submodule{padding:0}}</style>');
   var modal = document.createElement('div');
   modal.id = 'atpp-integrated-subpage';
   modal.setAttribute('aria-hidden','true');
@@ -217,8 +207,9 @@ Entrega clara, sin relleno, defendible ante autoridad educativa.`;yp(v),Xe(!1)},
   modal.classList.add('atpp-integrated-submodule');
   var mountedCentral = null;
   function findCentralColumn() {
-    var candidates = Array.from(document.querySelectorAll('div'));
-    return candidates.find(function(el){ return el.classList.contains('max-w-[700px]'); }) || null;
+    var main = document.querySelector('main.flex-1');
+    if (!main) return null;
+    return Array.from(main.children).find(function(el){return el.classList && el.classList.contains('max-w-[1380px]');}) || main.firstElementChild || null;
   }
   function mountSubmodule() {
     var central = findCentralColumn();
@@ -231,17 +222,9 @@ Entrega clara, sin relleno, defendible ante autoridad educativa.`;yp(v),Xe(!1)},
     return central;
   }
   function normalized(el) { return (el.textContent || '').replace(/\s+/g,' ').trim(); }
-  function renderGrades() {
-    var saved={}; try { saved=JSON.parse(localStorage.getItem('atpp-multigrado-state')||'{}'); } catch (_) {}
-    document.querySelectorAll('[data-grade-options]').forEach(function (box) {
-      var kind=box.getAttribute('data-grade-options'); var key=kind==='principal'?'principal':'otros'; var selected=saved[key] || (kind==='principal'?['3°']:[]);
-      box.innerHTML=''; ['1°','2°','3°','4°','5°','6°'].forEach(function (grade) { var b=document.createElement('button'); b.type='button'; b.textContent=grade; b.dataset.grade=grade; b.className=selected.indexOf(grade)>=0?'active':''; b.addEventListener('click',function(){b.classList.toggle('active');}); box.appendChild(b); });
-    });
-  }
-  function openView(key) { var view=integration[key]; if(!view)return; var central=mountSubmodule(); document.getElementById('atpp-integrated-title').textContent=view.title; document.getElementById('atpp-integrated-intro').textContent=view.intro; document.getElementById('atpp-integrated-body').innerHTML=view.body; modal.classList.add('open'); modal.setAttribute('aria-hidden','false'); if(key==='multigrado')renderGrades(); requestAnimationFrame(function(){(central||modal).scrollIntoView({behavior:'smooth',block:'start'});}); }
+  function openView(key) { var view=integration[key]; if(!view)return; var central=mountSubmodule(); document.getElementById('atpp-integrated-title').textContent=view.title; document.getElementById('atpp-integrated-intro').textContent=view.intro; document.getElementById('atpp-integrated-body').innerHTML=view.body; modal.classList.add('open'); modal.setAttribute('aria-hidden','false'); requestAnimationFrame(function(){(central||modal).scrollIntoView({behavior:'smooth',block:'start'});}); }
   function closeView(){modal.classList.remove('open');modal.setAttribute('aria-hidden','true');if(mountedCentral){Array.from(mountedCentral.children).forEach(function(child){child.classList.remove('atpp-central-hidden');});document.body.appendChild(modal);mountedCentral=null;}}
-  function saveMultigrado(){var result={principal:[],otros:[]};document.querySelectorAll('[data-grade-options]').forEach(function(box){var key=box.getAttribute('data-grade-options')==='principal'?'principal':'otros';result[key]=Array.from(box.querySelectorAll('button.active')).map(function(b){return b.dataset.grade;});});try{localStorage.setItem('atpp-multigrado-state',JSON.stringify(result));}catch(_){}var button=document.querySelector('[data-integrated-action="save-multigrado"]');if(button){button.textContent='Configuración multigrado guardada';setTimeout(function(){button.textContent='Guardar configuración multigrado';},1800);}}
-  modal.addEventListener('click',function(e){if(e.target===modal)return;var action=e.target.closest('[data-integrated-action]');if(!action)return;var type=action.getAttribute('data-integrated-action');if(type==='close'||type==='cancel')closeView();if(type==='save-multigrado')saveMultigrado();});
+  modal.addEventListener('click',function(e){if(e.target===modal)return;var action=e.target.closest('[data-integrated-action]');if(!action)return;var type=action.getAttribute('data-integrated-action');if(type==='close'||type==='cancel')closeView();});
   document.addEventListener('keydown',function(e){if(e.key==='Escape')closeView();});
   document.addEventListener('click',function(e){
     var target=e.target.closest && e.target.closest('button'); if(!target||target.closest('#atpp-flow-shell')||target.closest('#atpp-integrated-subpage'))return;
@@ -249,7 +232,6 @@ Entrega clara, sin relleno, defendible ante autoridad educativa.`;yp(v),Xe(!1)},
     if(text==='4. Secuencia' || text.indexOf('4. Secuencia didáctica')===0){e.preventDefault();e.stopImmediatePropagation();openView('secuencia');}
     else if(text==='5. Evaluación' || text.indexOf('5. Evaluación')===0){e.preventDefault();e.stopImmediatePropagation();openView('evaluacion');}
     else if(text==='6. Evidencias' || text.indexOf('6. Evidencias')===0){e.preventDefault();e.stopImmediatePropagation();openView('evidencias');}
-    else if(text==='Configuración' || text.indexOf('Configuración')===0){e.preventDefault();e.stopImmediatePropagation();openView('multigrado');}
   }, true);
 })();
 </script>
