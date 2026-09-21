@@ -513,12 +513,12 @@ def render_main_dashboard() -> None:
       body {{ display: flex; flex-direction: column; }}
       #root {{ flex: 0 0 auto; min-height: calc(100vh - 86px); }}
       .atpp-correct-menu-logo {{
-        position: fixed; left: 14px; top: 74px; z-index: 100001;
-        width: 218px; height: 76px; display: grid; place-items: center;
-        padding: 8px 12px; box-sizing: border-box; border-radius: 0 0 14px 14px;
+        position: fixed; left: 0; top: 42px; z-index: 100001;
+        width: 252px; height: 130px; display: grid; place-items: start center;
+        padding: 12px 16px; box-sizing: border-box; border-radius: 0;
         background: #061d32; box-shadow: 0 8px 18px rgba(0,0,0,.12);
       }}
-      .atpp-correct-menu-logo img {{ width: 100%; height: 58px; object-fit: contain; object-position: left center; }}
+      .atpp-correct-menu-logo img {{ width: 100%; height: 82px; object-fit: contain; object-position: center top; }}
       .atpp-dashboard-floor {{
         flex: 0 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 18px;
         min-height: 86px; padding: 16px 28px; box-sizing: border-box;
@@ -529,8 +529,8 @@ def render_main_dashboard() -> None:
       .atpp-dashboard-floor strong {{ color: #fff; font-size: 14px; }}
       .atpp-dashboard-floor small {{ display: block; color: #a9d994; margin-top: 3px; }}
       @media(max-width:680px) {{
-        .atpp-correct-menu-logo {{ left: 8px; top: 64px; width: 176px; height: 64px; }}
-        .atpp-correct-menu-logo img {{ height: 48px; }}
+        .atpp-correct-menu-logo {{ left: 0; top: 38px; width: 232px; height: 118px; padding: 10px 14px; }}
+        .atpp-correct-menu-logo img {{ height: 72px; }}
         .atpp-dashboard-floor {{ flex-direction: column; align-items: flex-start; padding: 14px 18px; }}
       }}
     </style>
