@@ -208,13 +208,32 @@ Entrega clara, sin relleno, defendible ante autoridad educativa.`;yp(v),Xe(!1)},
     + '@media(max-width:760px){.atpp-integrated-grid{grid-template-columns:1fr}.atpp-integrated-head{flex-direction:column}.atpp-integrated-close{align-self:flex-end}}'
     + '</style>';
   document.head.insertAdjacentHTML('beforeend', styles);
-  document.head.insertAdjacentHTML('beforeend', '<style id="atpp-integrated-submodule-style">#atpp-integrated-subpage.atpp-integrated-submodule{min-height:calc(100vh - 110px)}#atpp-integrated-subpage.atpp-integrated-submodule .atpp-integrated-close{white-space:nowrap}@media(max-width:760px){#atpp-integrated-subpage.atpp-integrated-submodule{padding:14px 10px}}</style>');
+  document.head.insertAdjacentHTML('beforeend', '<style id="atpp-integrated-submodule-style">#atpp-integrated-subpage.atpp-integrated-submodule{min-height:100%;height:auto}.atpp-central-hidden{display:none!important}#atpp-integrated-subpage.atpp-integrated-submodule .atpp-integrated-close{white-space:nowrap}@media(max-width:760px){#atpp-integrated-subpage.atpp-integrated-submodule{padding:14px 10px}}</style>');
   var modal = document.createElement('div');
   modal.id = 'atpp-integrated-subpage';
   modal.setAttribute('aria-hidden','true');
   modal.innerHTML = '<div class="atpp-integrated-dialog" role="region" aria-labelledby="atpp-integrated-title"><div class="atpp-integrated-head"><div><h2 id="atpp-integrated-title"></h2><p id="atpp-integrated-intro"></p></div><button class="atpp-integrated-close" data-integrated-action="close">← Volver al dashboard</button></div><div id="atpp-integrated-body"></div></div>';
   document.body.appendChild(modal);
   modal.classList.add('atpp-integrated-submodule');
+  var mountedCentral = null;
+  function findCentralColumn() {
+    var main = document.querySelector('main');
+    if (!main) return null;
+    var shell = main.firstElementChild;
+    if (!shell) return null;
+    var layout = Array.from(shell.children).find(function(el){ return el.classList.contains('grid'); });
+    return layout && layout.firstElementChild ? layout.firstElementChild : null;
+  }
+  function mountSubmodule() {
+    var central = findCentralColumn();
+    if (!central) return null;
+    mountedCentral = central;
+    Array.from(central.children).forEach(function(child){
+      if (child !== modal) child.classList.add('atpp-central-hidden');
+    });
+    central.appendChild(modal);
+    return central;
+  }
   function normalized(el) { return (el.textContent || '').replace(/\s+/g,' ').trim(); }
   function renderGrades() {
     var saved={}; try { saved=JSON.parse(localStorage.getItem('atpp-multigrado-state')||'{}'); } catch (_) {}
@@ -223,8 +242,8 @@ Entrega clara, sin relleno, defendible ante autoridad educativa.`;yp(v),Xe(!1)},
       box.innerHTML=''; ['1°','2°','3°','4°','5°','6°'].forEach(function (grade) { var b=document.createElement('button'); b.type='button'; b.textContent=grade; b.dataset.grade=grade; b.className=selected.indexOf(grade)>=0?'active':''; b.addEventListener('click',function(){b.classList.toggle('active');}); box.appendChild(b); });
     });
   }
-  function openView(key) { var view=integration[key]; if(!view)return; document.getElementById('atpp-integrated-title').textContent=view.title; document.getElementById('atpp-integrated-intro').textContent=view.intro; document.getElementById('atpp-integrated-body').innerHTML=view.body; modal.classList.add('open'); modal.setAttribute('aria-hidden','false'); if(key==='multigrado')renderGrades(); requestAnimationFrame(function(){modal.scrollIntoView({behavior:'smooth',block:'start'});}); }
-  function closeView(){modal.classList.remove('open');modal.setAttribute('aria-hidden','true');}
+  function openView(key) { var view=integration[key]; if(!view)return; var central=mountSubmodule(); document.getElementById('atpp-integrated-title').textContent=view.title; document.getElementById('atpp-integrated-intro').textContent=view.intro; document.getElementById('atpp-integrated-body').innerHTML=view.body; modal.classList.add('open'); modal.setAttribute('aria-hidden','false'); if(key==='multigrado')renderGrades(); requestAnimationFrame(function(){(central||modal).scrollIntoView({behavior:'smooth',block:'start'});}); }
+  function closeView(){modal.classList.remove('open');modal.setAttribute('aria-hidden','true');if(mountedCentral){Array.from(mountedCentral.children).forEach(function(child){child.classList.remove('atpp-central-hidden');});document.body.appendChild(modal);mountedCentral=null;}}
   function saveMultigrado(){var result={principal:[],otros:[]};document.querySelectorAll('[data-grade-options]').forEach(function(box){var key=box.getAttribute('data-grade-options')==='principal'?'principal':'otros';result[key]=Array.from(box.querySelectorAll('button.active')).map(function(b){return b.dataset.grade;});});try{localStorage.setItem('atpp-multigrado-state',JSON.stringify(result));}catch(_){}var button=document.querySelector('[data-integrated-action="save-multigrado"]');if(button){button.textContent='Configuración multigrado guardada';setTimeout(function(){button.textContent='Guardar configuración multigrado';},1800);}}
   modal.addEventListener('click',function(e){if(e.target===modal)return;var action=e.target.closest('[data-integrated-action]');if(!action)return;var type=action.getAttribute('data-integrated-action');if(type==='close'||type==='cancel')closeView();if(type==='save-multigrado')saveMultigrado();});
   document.addEventListener('keydown',function(e){if(e.key==='Escape')closeView();});
