@@ -400,6 +400,9 @@ def render_intensive() -> None:
   body > main, #atpp-layout { min-height: 0 !important; height: auto !important; }
   body > main { flex: none !important; }
   .authority-footer { margin-top: 0 !important; }
+  *, *::before, *::after { scrollbar-width: none !important; }
+  *::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; }
+  #root, #atpp-layout, #atpp-menu, #atpp-dashboard, main, .shell, .chalk-content, .modal-box, .p2-recovery, .p2-recovery-card { overflow: hidden !important; }
   .topbar .nav .home-link {
     display: inline-flex;
     align-items: center;
