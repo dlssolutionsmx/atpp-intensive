@@ -540,7 +540,12 @@ def render_main_dashboard() -> None:
             holder.style.cssText = 'padding:6px 10px 22px;border-bottom:1px solid #dfe7ee;margin-bottom:14px;';
             menu.insertBefore(holder, menu.firstChild);
           }}
-          holder.innerHTML = '<img src="' + uri + '" alt="ATpp Sticker" style="width:205px;height:48px;object-fit:contain;object-position:left">';
+          var current = holder.querySelector('img');
+          if (!current) {{
+            holder.innerHTML = '<img src="' + uri + '" alt="ATpp Sticker" style="width:205px;height:48px;object-fit:contain;object-position:left">';
+          }} else if (current.src !== uri) {{
+            current.src = uri;
+          }}
           menu.querySelectorAll('img').forEach(function(img) {{ if (!holder.contains(img)) img.remove(); }});
         }}
         replaceMenuLogo();
