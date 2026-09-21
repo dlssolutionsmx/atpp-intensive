@@ -155,101 +155,23 @@ Entrega clara, sin relleno, defendible ante autoridad educativa.`;yp(v),Xe(!1)},
 })();
 </script>
 
-<script id="atpp-requested-subpages">
-(function () {
+<script id="atpp-module-page-routing">
+(() => {
   'use strict';
-  var integration = {
-    secuencia: {
-      match: '4. Secuencia',
-      title: '4. Secuencia didáctica',
-      intro: 'Organiza tu intervención docente en momentos claros. Tiempo total estimado 150 min.',
-      body: '<div class="atpp-integrated-grid atpp-sequence-grid">'
-        + '<article><span class="atpp-integrated-kicker">Inicio</span><h3>Activación y propósito</h3><p>Define el propósito de aprendizaje, activa saberes previos y acuerda los criterios de trabajo.</p><label>Recursos<textarea data-integrated-field="secuencia-recursos" placeholder="Recursos para el inicio"></textarea></label></article>'
-        + '<article><span class="atpp-integrated-kicker">Desarrollo</span><h3>Construcción y colaboración</h3><p>Organiza la construcción colaborativa del producto y la intervención durante el proceso.</p><label>Tutoría docente<textarea data-integrated-field="secuencia-tutoria" placeholder="Acompañamiento y preguntas guía"></textarea></label></article>'
-        + '<article><span class="atpp-integrated-kicker">Cierre</span><h3>Socialización y evaluación</h3><p>Comparte los productos, recupera los aprendizajes y prepara la valoración del proceso.</p><label>Autoevaluación y coevaluación<textarea data-integrated-field="secuencia-cierre" placeholder="Acuerdos para el cierre"></textarea></label></article>'
-        + '</div>'
-    },
-    evaluacion: {
-      match: '5. Evaluación',
-      title: '5. Evaluación — Formativa y situada',
-      intro: 'Criterios, instrumentos y momentos de evaluación alineados al PDA.',
-      body: '<div class="atpp-integrated-grid atpp-evaluation-grid">'
-        + '<article><span class="atpp-integrated-kicker">Instrumento</span><h3>Rúbrica de producción textual</h3><p>Secuencia parcial y criterios observables para acompañar el avance.</p><label>Producto final<input data-integrated-field="evaluacion-producto" placeholder="Producto final"></label><label>Instrumento<input data-integrated-field="evaluacion-instrumento" placeholder="Rúbrica de producción textual"></label></article>'
-        + '<article><span class="atpp-integrated-kicker">Momentos de evaluación</span><h3>Lista de cotejo inicial</h3><p>Observación + borradores</p><p>Producto final + autoevaluación</p><div class="atpp-integrated-tags"><span>Evaluación Formativa</span><span>Evaluación Sumativa</span></div></article>'
-        + '<article><span class="atpp-integrated-kicker">Cierre del proceso</span><h3>Retroalimentación</h3><p>Registra los acuerdos y la evidencia final al cierre del proceso.</p><label>Observaciones<textarea data-integrated-field="evaluacion-observaciones" placeholder="Criterios observables y niveles de logro"></textarea></label></article>'
-        + '</div><p class="atpp-integrated-note">Evaluación con criterios observables y niveles de logro · MEJOREDU · Plan 2022 · Criterio docente respetado</p>'
-    },
-    evidencias: {
-      match: '6. Evidencias',
-      title: '6. Evidencias y recursos',
-      intro: 'Selecciona evidencias y recursos para documentar el proceso de aprendizaje. Todo queda listo para tu carpeta de evidencias.',
-      body: '<div class="atpp-integrated-grid atpp-evidence-grid">'
-        + '<article><span class="atpp-integrated-kicker">Productos finales</span><h3>Producto final</h3><p>Registra el producto, el desempeño o la explicación que documenta el aprendizaje.</p><label>Producto o evidencia<textarea data-integrated-field="evidencias-producto" placeholder="Producto final esperado"></textarea></label></article>'
-        + '<article><span class="atpp-integrated-kicker">Seguimiento</span><h3>Observación</h3><p>Notas del docente, lista de cotejo</p><h3>Autoevaluación</h3><p>Recupera la voz del estudiante y los acuerdos de mejora.</p></article>'
-        + '<article><span class="atpp-integrated-kicker">Recursos didácticos</span><h3>Recursos sugeridos por ATpp</h3><ul><li>Libro de texto Lenguajes Pág. 42-48</li><li>Fichas de organizador gráfico</li><li>Rúbrica analítica MEJOREDU</li></ul></article>'
-        + '</div><div class="atpp-integrated-resource-row"><strong>Evidencias sugeridas por ATpp (3)</strong><span>Rúbrica editable de escritura</span><span>Lista de cotejo por estaciones</span><span>Carpeta de evidencias lista</span></div>'
-    },
-    multigrado: {
-      match: 'Configuración',
-      title: 'Configuración · Docente Multigrado',
-      intro: 'Subconfiguración derivada de Tipo docente (contexto activo): Docente Multigrado.',
-      body: '<div class="atpp-multigrado-card"><div class="atpp-multigrado-heading"><span class="atpp-multigrado-check">✓</span><div><h3>Modo Multigrado</h3><p>Como especialista puedes atender múltiples grados/grupos en la misma escuela. Agrega grupos abajo:</p></div></div>'
-        + '<div class="atpp-multigrado-section"><strong>Grado principal</strong><div class="atpp-grade-options" data-grade-options="principal"></div><div class="atpp-grade-summary"><span><b>13</b> Hombres</span><span><b>13</b> Mujeres</span><span><b>26</b> Total</span></div></div>'
-        + '<div class="atpp-multigrado-divider"></div><div class="atpp-multigrado-warning">Multigrado: Escuela Unitaria/Bidocente. Si necesitas otro grado/grupo, → agrega nuevo Grado/Grupo. Si necesitas otra escuela/turno → agrega nuevo contexto.</div>'
-        + '<div class="atpp-multigrado-section"><strong>Grado (Otro)</strong><div class="atpp-grade-options" data-grade-options="otro"></div></div>'
-        + '<div class="atpp-integrated-actions"><button data-integrated-action="save-multigrado">Guardar configuración multigrado</button><button class="secondary" data-integrated-action="cancel">Cancelar</button></div></div>'
-    }
-  };
-  var styles = '<style id="atpp-requested-subpages-style">'
-    + '#atpp-integrated-subpage{display:none;position:relative;z-index:1;background:#F8FAFC;border-top:1px solid #E2E8F0;padding:clamp(18px,3vw,34px) clamp(14px,3vw,42px);overflow:visible;scroll-margin-top:18px}'
-    + '#atpp-integrated-subpage.open{display:block}.atpp-integrated-dialog{width:min(1080px,100%);margin:0 auto;background:#fff;border:1px solid #E2E8F0;border-radius:16px;box-shadow:0 8px 28px rgba(15,23,42,.10);padding:clamp(20px,4vw,36px);color:#0F172A}'
-    + '.atpp-integrated-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;border-bottom:1px solid #E2E8F0;padding-bottom:18px;margin-bottom:22px}.atpp-integrated-head h2{margin:0;color:#0F172A;font-size:clamp(22px,3vw,30px)}.atpp-integrated-head p{margin:7px 0 0;color:#64748B;font-size:14px}.atpp-integrated-close{border:0;border-radius:10px;background:#F1F5F9;color:#0F172A;padding:9px 12px;font-weight:800;cursor:pointer}'
-    + '.atpp-integrated-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.atpp-integrated-grid article{border:1px solid #E2E8F0;border-radius:14px;padding:18px;background:#FBFCFE}.atpp-integrated-grid h3{margin:6px 0 8px;color:#0F172A;font-size:17px}.atpp-integrated-grid p{margin:7px 0;color:#475569;font-size:13px;line-height:1.5}.atpp-integrated-kicker{display:inline-block;color:#16A34A;text-transform:uppercase;letter-spacing:.07em;font-size:10px;font-weight:800}.atpp-integrated-grid label{display:block;margin-top:14px;color:#64748B;font-size:11px;font-weight:700}.atpp-integrated-grid input,.atpp-integrated-grid textarea{display:block;width:100%;margin-top:6px;border:1px solid #CBD5E1;border-radius:8px;padding:9px;font:inherit;font-size:12px;color:#0F172A;background:#fff}.atpp-integrated-grid textarea{min-height:72px;resize:vertical}.atpp-integrated-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}.atpp-integrated-tags span,.atpp-integrated-resource-row span{display:inline-flex;padding:6px 9px;border-radius:999px;background:#DCFCE7;color:#166534;font-size:11px;font-weight:700}.atpp-integrated-note{margin:18px 0 0;padding:12px 14px;background:#F0FDF4;border-left:3px solid #16A34A;color:#166534;font-size:12px}.atpp-integrated-grid ul{margin:10px 0 0;padding-left:18px;color:#475569;font-size:13px;line-height:1.8}.atpp-integrated-resource-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:16px;padding:14px;border:1px solid #E2E8F0;border-radius:12px;background:#fff}.atpp-integrated-resource-row strong{font-size:12px;color:#0F172A;margin-right:4px}.atpp-multigrado-card{border:1px solid #E2E8F0;border-radius:14px;padding:20px;background:#fff}.atpp-multigrado-heading{display:flex;gap:10px;align-items:flex-start;padding:14px;border-radius:12px;background:#F8FAFC}.atpp-multigrado-check{display:grid;place-items:center;width:20px;height:20px;border-radius:5px;background:#22C55E;color:#fff;font-weight:900}.atpp-multigrado-heading h3{margin:0;color:#0F172A}.atpp-multigrado-heading p{margin:4px 0 0;color:#475569;font-size:12px;line-height:1.45}.atpp-multigrado-section{margin-top:18px}.atpp-multigrado-section>strong{font-size:12px;color:#64748B}.atpp-grade-options{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}.atpp-grade-options button{min-width:42px;height:32px;border:1px solid #CBD5E1;border-radius:7px;background:#fff;color:#0F172A;font-weight:800;cursor:pointer}.atpp-grade-options button.active{background:#0F172A;border-color:#0F172A;color:#fff}.atpp-grade-summary{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.atpp-grade-summary span{padding:6px 9px;border:1px solid #E2E8F0;border-radius:7px;color:#475569;font-size:11px}.atpp-multigrado-divider{height:1px;background:#E2E8F0;margin:18px 0}.atpp-multigrado-warning{padding:11px 12px;border:1px solid #FDE68A;border-radius:9px;background:#FFFBEB;color:#92400E;font-size:12px;line-height:1.45}.atpp-integrated-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:20px}.atpp-integrated-actions button{border:0;border-radius:9px;background:#16A34A;color:#fff;padding:10px 14px;font-weight:800;cursor:pointer}.atpp-integrated-actions button.secondary{background:#F1F5F9;color:#334155}'
-    + '@media(max-width:760px){.atpp-integrated-grid{grid-template-columns:1fr}.atpp-integrated-head{flex-direction:column}.atpp-integrated-close{align-self:flex-end}}'
-    + '</style>';
-  document.head.insertAdjacentHTML('beforeend', styles);
-  document.head.insertAdjacentHTML('beforeend', '<style id="atpp-integrated-submodule-style">#atpp-integrated-subpage.atpp-integrated-submodule{min-height:100%;height:auto}.atpp-central-hidden{display:none!important}#atpp-integrated-subpage.atpp-integrated-submodule .atpp-integrated-close{white-space:nowrap}@media(max-width:760px){#atpp-integrated-subpage.atpp-integrated-submodule{padding:14px 10px}}</style>');
-  var modal = document.createElement('div');
-  modal.id = 'atpp-integrated-subpage';
-  modal.setAttribute('aria-hidden','true');
-  modal.innerHTML = '<div class="atpp-integrated-dialog" role="region" aria-labelledby="atpp-integrated-title"><div class="atpp-integrated-head"><div><h2 id="atpp-integrated-title"></h2><p id="atpp-integrated-intro"></p></div><button class="atpp-integrated-close" data-integrated-action="close">← Volver al dashboard</button></div><div id="atpp-integrated-body"></div></div>';
-  document.body.appendChild(modal);
-  modal.classList.add('atpp-integrated-submodule');
-  var mountedCentral = null;
-  function findCentralColumn() {
-    var candidates = Array.from(document.querySelectorAll('div'));
-    return candidates.find(function(el){ return el.classList.contains('max-w-[700px]'); }) || null;
-  }
-  function mountSubmodule() {
-    var central = findCentralColumn();
-    if (!central) return null;
-    mountedCentral = central;
-    Array.from(central.children).forEach(function(child){
-      if (child !== modal) child.classList.add('atpp-central-hidden');
-    });
-    central.appendChild(modal);
-    return central;
-  }
-  function normalized(el) { return (el.textContent || '').replace(/\s+/g,' ').trim(); }
-  function renderGrades() {
-    var saved={}; try { saved=JSON.parse(localStorage.getItem('atpp-multigrado-state')||'{}'); } catch (_) {}
-    document.querySelectorAll('[data-grade-options]').forEach(function (box) {
-      var kind=box.getAttribute('data-grade-options'); var key=kind==='principal'?'principal':'otros'; var selected=saved[key] || (kind==='principal'?['3°']:[]);
-      box.innerHTML=''; ['1°','2°','3°','4°','5°','6°'].forEach(function (grade) { var b=document.createElement('button'); b.type='button'; b.textContent=grade; b.dataset.grade=grade; b.className=selected.indexOf(grade)>=0?'active':''; b.addEventListener('click',function(){b.classList.toggle('active');}); box.appendChild(b); });
-    });
-  }
-  function openView(key) { var view=integration[key]; if(!view)return; var central=mountSubmodule(); document.getElementById('atpp-integrated-title').textContent=view.title; document.getElementById('atpp-integrated-intro').textContent=view.intro; document.getElementById('atpp-integrated-body').innerHTML=view.body; modal.classList.add('open'); modal.setAttribute('aria-hidden','false'); if(key==='multigrado')renderGrades(); requestAnimationFrame(function(){(central||modal).scrollIntoView({behavior:'smooth',block:'start'});}); }
-  function closeView(){modal.classList.remove('open');modal.setAttribute('aria-hidden','true');if(mountedCentral){Array.from(mountedCentral.children).forEach(function(child){child.classList.remove('atpp-central-hidden');});document.body.appendChild(modal);mountedCentral=null;}}
-  function saveMultigrado(){var result={principal:[],otros:[]};document.querySelectorAll('[data-grade-options]').forEach(function(box){var key=box.getAttribute('data-grade-options')==='principal'?'principal':'otros';result[key]=Array.from(box.querySelectorAll('button.active')).map(function(b){return b.dataset.grade;});});try{localStorage.setItem('atpp-multigrado-state',JSON.stringify(result));}catch(_){}var button=document.querySelector('[data-integrated-action="save-multigrado"]');if(button){button.textContent='Configuración multigrado guardada';setTimeout(function(){button.textContent='Guardar configuración multigrado';},1800);}}
-  modal.addEventListener('click',function(e){if(e.target===modal)return;var action=e.target.closest('[data-integrated-action]');if(!action)return;var type=action.getAttribute('data-integrated-action');if(type==='close'||type==='cancel')closeView();if(type==='save-multigrado')saveMultigrado();});
-  document.addEventListener('keydown',function(e){if(e.key==='Escape')closeView();});
-  document.addEventListener('click',function(e){
-    var target=e.target.closest && e.target.closest('button'); if(!target||target.closest('#atpp-flow-shell')||target.closest('#atpp-integrated-subpage'))return;
-    var text=normalized(target);
-    if(text==='4. Secuencia' || text.indexOf('4. Secuencia didáctica')===0){e.preventDefault();e.stopImmediatePropagation();openView('secuencia');}
-    else if(text==='5. Evaluación' || text.indexOf('5. Evaluación')===0){e.preventDefault();e.stopImmediatePropagation();openView('evaluacion');}
-    else if(text==='6. Evidencias' || text.indexOf('6. Evidencias')===0){e.preventDefault();e.stopImmediatePropagation();openView('evidencias');}
-    else if(text==='Configuración' || text.indexOf('Configuración')===0){e.preventDefault();e.stopImmediatePropagation();openView('multigrado');}
+  const routes = [
+    { test: text => text === '4. Secuencia' || text.startsWith('4. Secuencia didáctica'), href: 'secuencia.html' },
+    { test: text => text === '5. Evaluación' || text.startsWith('5. Evaluación'), href: 'evaluacion.html' },
+    { test: text => text === '6. Evidencias' || text.startsWith('6. Evidencias'), href: 'evidencias.html' }
+  ];
+  document.addEventListener('click', event => {
+    const target = event.target.closest && event.target.closest('button, a');
+    if (!target || target.closest('#atpp-flow-shell')) return;
+    const text = (target.textContent || '').replace(/\s+/g, ' ').trim();
+    const route = routes.find(item => item.test(text));
+    if (!route) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    window.location.href = route.href;
   }, true);
 })();
 </script>
