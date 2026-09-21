@@ -149,7 +149,7 @@ Entrega clara, sin relleno, defendible ante autoridad educativa.`;yp(v),Xe(!1)},
     state.data[steps[state.step].id+'_done'] = true; save();
   }
   function open(step) { state.step = typeof step === 'number' ? step : state.step; var shell=document.getElementById('atpp-flow-shell'); shell.classList.add('open'); render(); shell.scrollIntoView({behavior:'smooth',block:'start'}); }
-  function routeIntensive(event) { var button=event.target && event.target.closest && event.target.closest('button'); if(!button)return; var text=(button.textContent||'').replace(/\s+/g,' ').trim(); if(text.indexOf('ATpp Intensive')===0){event.preventDefault();event.stopPropagation(); if(window.top!==window.self){window.top.location.href='https://atpp-intensiva.streamlit.app/?page=intensive';}else{window.location.href='intensive.html';} return;} if(text.indexOf('Continuar Planeación')===0){event.preventDefault();event.stopPropagation();open(1);} }
+  function routeIntensive(event) { var button=event.target && event.target.closest && event.target.closest('button'); if(!button)return; var text=(button.textContent||'').replace(/\s+/g,' ').trim(); if(text.indexOf('ATpp Intensive')===0){event.preventDefault();event.stopPropagation(); try{window.top.location.href=new URL('intensive.html',window.top.location.href).href;}catch(_){window.location.href='intensive.html';} return;} if(text.indexOf('Continuar Planeación')===0){event.preventDefault();event.stopPropagation();open(1);} }
   function boot() { if(document.getElementById('atpp-flow-launcher'))return; var launcher=document.createElement('button'); launcher.id='atpp-flow-launcher'; launcher.textContent='Ruta de planeación 1–6'; launcher.setAttribute('aria-label','Abrir ruta completa de planeación'); launcher.addEventListener('click',function(){open(0);}); document.body.appendChild(launcher); var shell=document.createElement('div'); shell.id='atpp-flow-shell'; document.body.appendChild(shell); document.addEventListener('click',function(e){var a=e.target.closest && e.target.closest('[data-action]'); if(a){var action=a.getAttribute('data-action'); if(action==='close'){document.getElementById('atpp-flow-shell').classList.remove('open');return;} collect(); if(action==='back')state.step=Math.max(0,state.step-1); if(action==='next')state.step=Math.min(steps.length-1,state.step+1); if(action==='save'){} render(); return;} var step=e.target.closest && e.target.closest('[data-step]'); if(step){collect();state.step=Number(step.getAttribute('data-step'));render();return;} routeIntensive(e); },true); }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
@@ -189,42 +189,42 @@ Entrega clara, sin relleno, defendible ante autoridad educativa.`;yp(v),Xe(!1)},
         + '<article><span class="atpp-integrated-kicker">Recursos didácticos</span><h3>Recursos sugeridos por ATpp</h3><ul><li>Libro de texto Lenguajes Pág. 42-48</li><li>Fichas de organizador gráfico</li><li>Rúbrica analítica MEJOREDU</li></ul></article>'
         + '</div><div class="atpp-integrated-resource-row"><strong>Evidencias sugeridas por ATpp (3)</strong><span>Rúbrica editable de escritura</span><span>Lista de cotejo por estaciones</span><span>Carpeta de evidencias lista</span></div>'
     },
+    multigrado: {
+      match: 'Configuración',
+      title: 'Configuración · Docente Multigrado',
+      intro: 'Subconfiguración derivada de Tipo docente (contexto activo): Docente Multigrado.',
+      body: '<div class="atpp-multigrado-card"><div class="atpp-multigrado-heading"><span class="atpp-multigrado-check">✓</span><div><h3>Modo Multigrado</h3><p>Como especialista puedes atender múltiples grados/grupos en la misma escuela. Agrega grupos abajo:</p></div></div>'
+        + '<div class="atpp-multigrado-section"><strong>Grado principal</strong><div class="atpp-grade-options" data-grade-options="principal"></div><div class="atpp-grade-summary"><span><b>13</b> Hombres</span><span><b>13</b> Mujeres</span><span><b>26</b> Total</span></div></div>'
+        + '<div class="atpp-multigrado-divider"></div><div class="atpp-multigrado-warning">Multigrado: Escuela Unitaria/Bidocente. Si necesitas otro grado/grupo, → agrega nuevo Grado/Grupo. Si necesitas otra escuela/turno → agrega nuevo contexto.</div>'
+        + '<div class="atpp-multigrado-section"><strong>Grado (Otro)</strong><div class="atpp-grade-options" data-grade-options="otro"></div></div>'
+        + '<div class="atpp-integrated-actions"><button data-integrated-action="save-multigrado">Guardar configuración multigrado</button><button class="secondary" data-integrated-action="cancel">Cancelar</button></div></div>'
+    }
   };
   var styles = '<style id="atpp-requested-subpages-style">'
-    + '#atpp-integrated-subpage{display:none;position:relative;z-index:1;background:#F8FAFC;border-top:1px solid #E2E8F0;padding:clamp(18px,3vw,34px) clamp(14px,3vw,42px);overflow:visible;scroll-margin-top:18px}'
-    + '#atpp-integrated-subpage.open{display:block}.atpp-integrated-dialog{width:min(1080px,100%);margin:0 auto;background:#fff;border:1px solid #E2E8F0;border-radius:16px;box-shadow:0 8px 28px rgba(15,23,42,.10);padding:clamp(20px,4vw,36px);color:#0F172A}'
+    + '#atpp-integrated-subpage{display:none;position:fixed;inset:0;z-index:80;background:rgba(15,23,42,.42);padding:clamp(14px,4vw,42px);overflow:auto}'
+    + '#atpp-integrated-subpage.open{display:block}.atpp-integrated-dialog{width:min(1080px,100%);margin:auto;background:#fff;border:1px solid #E2E8F0;border-radius:18px;box-shadow:0 24px 70px rgba(15,23,42,.24);padding:clamp(20px,4vw,36px);color:#0F172A}'
     + '.atpp-integrated-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;border-bottom:1px solid #E2E8F0;padding-bottom:18px;margin-bottom:22px}.atpp-integrated-head h2{margin:0;color:#0F172A;font-size:clamp(22px,3vw,30px)}.atpp-integrated-head p{margin:7px 0 0;color:#64748B;font-size:14px}.atpp-integrated-close{border:0;border-radius:10px;background:#F1F5F9;color:#0F172A;padding:9px 12px;font-weight:800;cursor:pointer}'
     + '.atpp-integrated-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.atpp-integrated-grid article{border:1px solid #E2E8F0;border-radius:14px;padding:18px;background:#FBFCFE}.atpp-integrated-grid h3{margin:6px 0 8px;color:#0F172A;font-size:17px}.atpp-integrated-grid p{margin:7px 0;color:#475569;font-size:13px;line-height:1.5}.atpp-integrated-kicker{display:inline-block;color:#16A34A;text-transform:uppercase;letter-spacing:.07em;font-size:10px;font-weight:800}.atpp-integrated-grid label{display:block;margin-top:14px;color:#64748B;font-size:11px;font-weight:700}.atpp-integrated-grid input,.atpp-integrated-grid textarea{display:block;width:100%;margin-top:6px;border:1px solid #CBD5E1;border-radius:8px;padding:9px;font:inherit;font-size:12px;color:#0F172A;background:#fff}.atpp-integrated-grid textarea{min-height:72px;resize:vertical}.atpp-integrated-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}.atpp-integrated-tags span,.atpp-integrated-resource-row span{display:inline-flex;padding:6px 9px;border-radius:999px;background:#DCFCE7;color:#166534;font-size:11px;font-weight:700}.atpp-integrated-note{margin:18px 0 0;padding:12px 14px;background:#F0FDF4;border-left:3px solid #16A34A;color:#166534;font-size:12px}.atpp-integrated-grid ul{margin:10px 0 0;padding-left:18px;color:#475569;font-size:13px;line-height:1.8}.atpp-integrated-resource-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:16px;padding:14px;border:1px solid #E2E8F0;border-radius:12px;background:#fff}.atpp-integrated-resource-row strong{font-size:12px;color:#0F172A;margin-right:4px}.atpp-multigrado-card{border:1px solid #E2E8F0;border-radius:14px;padding:20px;background:#fff}.atpp-multigrado-heading{display:flex;gap:10px;align-items:flex-start;padding:14px;border-radius:12px;background:#F8FAFC}.atpp-multigrado-check{display:grid;place-items:center;width:20px;height:20px;border-radius:5px;background:#22C55E;color:#fff;font-weight:900}.atpp-multigrado-heading h3{margin:0;color:#0F172A}.atpp-multigrado-heading p{margin:4px 0 0;color:#475569;font-size:12px;line-height:1.45}.atpp-multigrado-section{margin-top:18px}.atpp-multigrado-section>strong{font-size:12px;color:#64748B}.atpp-grade-options{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}.atpp-grade-options button{min-width:42px;height:32px;border:1px solid #CBD5E1;border-radius:7px;background:#fff;color:#0F172A;font-weight:800;cursor:pointer}.atpp-grade-options button.active{background:#0F172A;border-color:#0F172A;color:#fff}.atpp-grade-summary{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.atpp-grade-summary span{padding:6px 9px;border:1px solid #E2E8F0;border-radius:7px;color:#475569;font-size:11px}.atpp-multigrado-divider{height:1px;background:#E2E8F0;margin:18px 0}.atpp-multigrado-warning{padding:11px 12px;border:1px solid #FDE68A;border-radius:9px;background:#FFFBEB;color:#92400E;font-size:12px;line-height:1.45}.atpp-integrated-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:20px}.atpp-integrated-actions button{border:0;border-radius:9px;background:#16A34A;color:#fff;padding:10px 14px;font-weight:800;cursor:pointer}.atpp-integrated-actions button.secondary{background:#F1F5F9;color:#334155}'
     + '@media(max-width:760px){.atpp-integrated-grid{grid-template-columns:1fr}.atpp-integrated-head{flex-direction:column}.atpp-integrated-close{align-self:flex-end}}'
     + '</style>';
   document.head.insertAdjacentHTML('beforeend', styles);
-  document.head.insertAdjacentHTML('beforeend', '<style id="atpp-integrated-submodule-style">#atpp-integrated-subpage.atpp-integrated-submodule{min-height:100%;height:auto;background:transparent;border:0;padding:0}.atpp-central-hidden{display:none!important}#atpp-integrated-subpage .atpp-integrated-dialog{width:100%;max-width:1280px;margin:0 auto;background:transparent;border:0;border-radius:0;box-shadow:none;padding:0}#atpp-integrated-subpage.atpp-integrated-submodule .atpp-integrated-close{white-space:nowrap}@media(max-width:760px){#atpp-integrated-subpage.atpp-integrated-submodule{padding:0}}</style>');
   var modal = document.createElement('div');
   modal.id = 'atpp-integrated-subpage';
   modal.setAttribute('aria-hidden','true');
-  modal.innerHTML = '<div class="atpp-integrated-dialog" role="region" aria-labelledby="atpp-integrated-title"><div class="atpp-integrated-head"><div><h2 id="atpp-integrated-title"></h2><p id="atpp-integrated-intro"></p></div><button class="atpp-integrated-close" data-integrated-action="close">← Volver al dashboard</button></div><div id="atpp-integrated-body"></div></div>';
+  modal.innerHTML = '<div class="atpp-integrated-dialog" role="dialog" aria-modal="true" aria-labelledby="atpp-integrated-title"><div class="atpp-integrated-head"><div><h2 id="atpp-integrated-title"></h2><p id="atpp-integrated-intro"></p></div><button class="atpp-integrated-close" data-integrated-action="close">Cerrar</button></div><div id="atpp-integrated-body"></div></div>';
   document.body.appendChild(modal);
-  modal.classList.add('atpp-integrated-submodule');
-  var mountedCentral = null;
-  function findCentralColumn() {
-    var main = document.querySelector('main.flex-1');
-    if (!main) return null;
-    return Array.from(main.children).find(function(el){return el.classList && el.classList.contains('max-w-[1380px]');}) || main.firstElementChild || null;
-  }
-  function mountSubmodule() {
-    var central = findCentralColumn();
-    if (!central) return null;
-    mountedCentral = central;
-    Array.from(central.children).forEach(function(child){
-      if (child !== modal) child.classList.add('atpp-central-hidden');
-    });
-    central.appendChild(modal);
-    return central;
-  }
   function normalized(el) { return (el.textContent || '').replace(/\s+/g,' ').trim(); }
-  function openView(key) { var view=integration[key]; if(!view)return; var central=mountSubmodule(); document.getElementById('atpp-integrated-title').textContent=view.title; document.getElementById('atpp-integrated-intro').textContent=view.intro; document.getElementById('atpp-integrated-body').innerHTML=view.body; modal.classList.add('open'); modal.setAttribute('aria-hidden','false'); requestAnimationFrame(function(){(central||modal).scrollIntoView({behavior:'smooth',block:'start'});}); }
-  function closeView(){modal.classList.remove('open');modal.setAttribute('aria-hidden','true');if(mountedCentral){Array.from(mountedCentral.children).forEach(function(child){child.classList.remove('atpp-central-hidden');});document.body.appendChild(modal);mountedCentral=null;}}
-  modal.addEventListener('click',function(e){if(e.target===modal)return;var action=e.target.closest('[data-integrated-action]');if(!action)return;var type=action.getAttribute('data-integrated-action');if(type==='close'||type==='cancel')closeView();});
+  function renderGrades() {
+    var saved={}; try { saved=JSON.parse(localStorage.getItem('atpp-multigrado-state')||'{}'); } catch (_) {}
+    document.querySelectorAll('[data-grade-options]').forEach(function (box) {
+      var kind=box.getAttribute('data-grade-options'); var key=kind==='principal'?'principal':'otros'; var selected=saved[key] || (kind==='principal'?['3°']:[]);
+      box.innerHTML=''; ['1°','2°','3°','4°','5°','6°'].forEach(function (grade) { var b=document.createElement('button'); b.type='button'; b.textContent=grade; b.dataset.grade=grade; b.className=selected.indexOf(grade)>=0?'active':''; b.addEventListener('click',function(){b.classList.toggle('active');}); box.appendChild(b); });
+    });
+  }
+  function openView(key) { var view=integration[key]; if(!view)return; document.getElementById('atpp-integrated-title').textContent=view.title; document.getElementById('atpp-integrated-intro').textContent=view.intro; document.getElementById('atpp-integrated-body').innerHTML=view.body; modal.classList.add('open'); modal.setAttribute('aria-hidden','false'); if(key==='multigrado')renderGrades(); }
+  function closeView(){modal.classList.remove('open');modal.setAttribute('aria-hidden','true');}
+  function saveMultigrado(){var result={principal:[],otros:[]};document.querySelectorAll('[data-grade-options]').forEach(function(box){var key=box.getAttribute('data-grade-options')==='principal'?'principal':'otros';result[key]=Array.from(box.querySelectorAll('button.active')).map(function(b){return b.dataset.grade;});});try{localStorage.setItem('atpp-multigrado-state',JSON.stringify(result));}catch(_){}var button=document.querySelector('[data-integrated-action="save-multigrado"]');if(button){button.textContent='Configuración multigrado guardada';setTimeout(function(){button.textContent='Guardar configuración multigrado';},1800);}}
+  modal.addEventListener('click',function(e){if(e.target===modal)return;var action=e.target.closest('[data-integrated-action]');if(!action)return;var type=action.getAttribute('data-integrated-action');if(type==='close'||type==='cancel')closeView();if(type==='save-multigrado')saveMultigrado();});
   document.addEventListener('keydown',function(e){if(e.key==='Escape')closeView();});
   document.addEventListener('click',function(e){
     var target=e.target.closest && e.target.closest('button'); if(!target||target.closest('#atpp-flow-shell')||target.closest('#atpp-integrated-subpage'))return;
@@ -232,7 +232,7 @@ Entrega clara, sin relleno, defendible ante autoridad educativa.`;yp(v),Xe(!1)},
     if(text==='4. Secuencia' || text.indexOf('4. Secuencia didáctica')===0){e.preventDefault();e.stopImmediatePropagation();openView('secuencia');}
     else if(text==='5. Evaluación' || text.indexOf('5. Evaluación')===0){e.preventDefault();e.stopImmediatePropagation();openView('evaluacion');}
     else if(text==='6. Evidencias' || text.indexOf('6. Evidencias')===0){e.preventDefault();e.stopImmediatePropagation();openView('evidencias');}
-    else if(modal.classList.contains('open')){closeView();}
+    else if(text==='Configuración' || text.indexOf('Configuración')===0){e.preventDefault();e.stopImmediatePropagation();openView('multigrado');}
   }, true);
 })();
 </script>
