@@ -535,6 +535,16 @@ def render_main_dashboard() -> None:
     </style>
     <script>
       (function() {{
+        var intensiveUrl = "https://atpp-intensiva.streamlit.app/?page=intensive";
+        document.addEventListener('click', function(event) {{
+          var trigger = event.target.closest('button,a');
+          if (!trigger || !/ATpp\\s+Intensive/i.test(trigger.textContent || '')) return;
+          event.preventDefault();
+          event.stopPropagation();
+          event.stopImmediatePropagation();
+          window.top.location.assign(intensiveUrl);
+        }}, true);
+
         var uri = "{main_logo_uri}";
         function replaceMenuLogo() {{
           var menu = document.getElementById('atpp-menu') || document.querySelector('aside');
