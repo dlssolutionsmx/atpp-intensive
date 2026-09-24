@@ -536,14 +536,31 @@ def render_main_dashboard() -> None:
     <script>
       (function() {{
         var intensiveUrl = "https://atpp-intensiva.streamlit.app/?page=intensive";
-        document.addEventListener('click', function(event) {{
-          var trigger = event.target.closest('button,a');
-          if (!trigger || !/ATpp\\s+Intensive/i.test(trigger.textContent || '')) return;
-          event.preventDefault();
-          event.stopPropagation();
-          event.stopImmediatePropagation();
-          window.top.location.assign(intensiveUrl);
-        }}, true);
+        function syncIntensiveLink() {{
+          var button = Array.from(document.querySelectorAll('button')).find(function(el) {{
+            return /ATpp\\s+Intensive/i.test(el.textContent || '');
+          }});
+          if (!button) return;
+          var link = document.getElementById('atpp-intensive-top-link');
+          if (!link) {{
+            link = document.createElement('a');
+            link.id = 'atpp-intensive-top-link';
+            link.href = intensiveUrl;
+            link.target = '_top';
+            link.setAttribute('aria-label', 'Abrir ATpp Intensive');
+            link.style.cssText = 'position:fixed;display:block;z-index:2147483647;background:transparent;text-decoration:none;';
+            document.body.appendChild(link);
+          }}
+          var rect = button.getBoundingClientRect();
+          link.style.left = rect.left + 'px';
+          link.style.top = rect.top + 'px';
+          link.style.width = rect.width + 'px';
+          link.style.height = rect.height + 'px';
+        }}
+        syncIntensiveLink();
+        new MutationObserver(syncIntensiveLink).observe(document.body, {{childList:true,subtree:true}});
+        window.addEventListener('resize', syncIntensiveLink);
+        window.addEventListener('scroll', syncIntensiveLink, true);
 
         var uri = "{main_logo_uri}";
         function replaceMenuLogo() {{
