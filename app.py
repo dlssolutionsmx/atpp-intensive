@@ -25,6 +25,13 @@ ATPP_INTENSIVE_LOGO_FILE = ROOT / "ATpp_sticker_intensive.png"
 DLS_LOGO_FILE = ROOT / "DLS_LOGO_N2.png"
 
 
+def navegar(page: str, section: str | None = None) -> None:
+    st.query_params.clear()
+    st.query_params["page"] = page
+    if section:
+        st.query_params["section"] = section
+
+
 def cargar_matriz_curricular() -> list[dict]:
     df = pd.read_excel(MATRIX_FILE, header=5)
     if df.shape[1] < 22:
@@ -69,10 +76,8 @@ def cargar_matriz_soluciones() -> list[dict]:
 def render_dashboard_sidebar(section: str) -> None:
     st.sidebar.markdown("## ATpp")
     st.sidebar.caption("MENÚ PRINCIPAL")
-    st.sidebar.markdown(
-        '<a class="native-sidebar-link active" href="?page=dashboard&section=dashboard">▦&nbsp;&nbsp; Dashboard</a>',
-        unsafe_allow_html=True,
-    )
+    st.sidebar.button("▦  Dashboard", key="nav-dashboard", use_container_width=True,
+                      on_click=navegar, args=("dashboard", "dashboard"))
     st.sidebar.caption("PLANEACIÓN")
     links = [
         ("1. Diagnóstico", "diagnostico"),
@@ -83,11 +88,8 @@ def render_dashboard_sidebar(section: str) -> None:
         ("6. Evidencias", "evidencias"),
     ]
     for label, key in links:
-        active = " active" if section == key else ""
-        st.sidebar.markdown(
-            f'<a class="native-sidebar-link{active}" href="?page=dashboard&section={key}">{label}</a>',
-            unsafe_allow_html=True,
-        )
+        st.sidebar.button(label, key=f"nav-{key}", use_container_width=True,
+                          on_click=navegar, args=("dashboard", key))
     st.sidebar.markdown(
         """
         <style>
@@ -133,14 +135,15 @@ def render_dashboard_overview() -> None:
             <a class="quick-card" href="?page=dashboard&section=diagnostico"><strong>¿Qué hacer hoy?</strong><span>Inicia o continúa el diagnóstico del grupo.</span></a>
             <a class="quick-card" href="?page=dashboard&section=secuencia"><strong>¿Qué vamos a hacer mañana?</strong><span>Consulta la secuencia didáctica y sus tiempos.</span></a>
           </div>
-          <div class="action-row">
-            <a class="action green" href="?page=intensive">ATpp Intensive&nbsp; →</a>
-            <a class="action" href="?page=dashboard&section=contenidos">Continuar&nbsp; →</a>
-          </div>
         </section>
         """,
         unsafe_allow_html=True,
     )
+    left, right = st.columns(2)
+    left.button("ATpp Intensive →", type="primary", use_container_width=True,
+                on_click=navegar, args=("intensive",))
+    right.button("Continuar →", use_container_width=True,
+                 on_click=navegar, args=("dashboard", "contenidos"))
 
 
 @st.cache_data(show_spinner=False)
@@ -280,8 +283,6 @@ def render_native_planning_summary() -> None:
 
 
 def render_dashboard(section: str = "dashboard") -> None:
-    if section != "dashboard":
-        return
     st.markdown(
         """
         <style>
@@ -290,7 +291,6 @@ def render_dashboard(section: str = "dashboard") -> None:
             max-width: none !important;
             padding: 0 24px !important;
           }
-          [data-testid="stSidebar"] { display: none !important; }
           [data-testid="stAppViewContainer"] .main iframe {
             width: 100% !important;
             max-width: none !important;
@@ -357,10 +357,16 @@ def render_dashboard(section: str = "dashboard") -> None:
     )
     st.session_state["asignatura"] = subject
     st.markdown(
-        f"<div class='dashboard-native-header'><div class='brand'><span class='brand-mark'>ATpp</span><span>3° A Tercer Grado · Matutino · Prim. Benito Juárez · {subject}</span></div><a href='?page=intensive'>ATpp Intensive</a></div>",
+        f"<div class='dashboard-native-header'><div class='brand'><span class='brand-mark'>ATpp</span><span>3° A Tercer Grado · Matutino · Prim. Benito Juárez · {subject}</span></div><span>ATpp General</span></div>",
         unsafe_allow_html=True,
     )
-    render_dashboard_overview()
+    render_dashboard_sidebar(section)
+    if section == "dashboard":
+        render_dashboard_overview()
+    else:
+        render_native_planning(section)
+        render_native_execution(section)
+        render_native_planning_summary()
 
 
 def render_intensive() -> None:
@@ -392,7 +398,7 @@ def render_intensive() -> None:
   .topbar { display: block !important; }
   #atpp { display: none !important; }
   #intensive { display: block !important; }
-  .topbar .nav { display: flex !important; }
+  .topbar .nav { display: none !important; }
   .topbar .mobile-toggle, .topbar .demo { display: none !important; }
   .topbar .brand { pointer-events: none; }
   html, body { min-height: 0 !important; height: auto !important; overflow: hidden !important; }
@@ -414,29 +420,11 @@ def render_intensive() -> None:
     font-weight: 700;
     text-decoration: none;
   }
-  .back-atpp { display: inline-flex !important; }
+  .back-atpp { display: none !important; }
 </style>
 <script>
 (function () {
   document.title = 'ATpp Intensive — Fases y talleres intensivos';
-  var homeUrl = 'https://atpp-intensiva.streamlit.app/?page=dashboard';
-  var nav = document.querySelector('.topbar .nav');
-  if (nav) {
-    nav.innerHTML = '<a class="home-link" href="' + homeUrl + '">← Inicio</a>';
-    nav.setAttribute('aria-label', 'Navegación de ATpp Intensive');
-    nav.querySelector('.home-link').addEventListener('click', function (event) {
-      event.preventDefault();
-      window.top.location.assign(homeUrl);
-    });
-  }
-  var back = document.querySelector('.back-atpp');
-  if (back) {
-    back.textContent = '← Volver al dashboard';
-    back.addEventListener('click', function (event) {
-      event.preventDefault();
-      window.top.location.href = homeUrl;
-    });
-  }
 })();
 </script>
 """
@@ -484,11 +472,13 @@ def render_intensive() -> None:
         </style>
         <nav class="intensive-streamlit-nav" aria-label="Navegación de ATpp Intensive">
           <span><img src="data:image/png;base64,""" + base64.b64encode(ATPP_INTENSIVE_LOGO_FILE.read_bytes()).decode("ascii") + """" alt="ATpp Intensive" style="height:42px;width:auto;object-fit:contain;"></span>
-          <a href="?page=dashboard">← Inicio</a>
+          <span>Fases y talleres intensivos</span>
         </nav>
         """,
         unsafe_allow_html=True,
     )
+    st.button("← Volver a ATpp General", key="intensive-back", on_click=navegar,
+              args=("dashboard", "dashboard"))
     components.html(site_html, height=2500, scrolling=False)
 
 
@@ -595,4 +585,4 @@ page = st.query_params.get("page", "dashboard")
 if page == "intensive":
     render_intensive()
 else:
-    render_main_dashboard()
+    render_dashboard(st.query_params.get("section", "dashboard"))
