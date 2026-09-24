@@ -509,6 +509,9 @@ def render_main_dashboard() -> None:
         st.error("No se encontró index.html junto a app.py.")
         st.stop()
     dashboard_html = DASHBOARD_FILE.read_text(encoding="utf-8")
+    dashboard_html = dashboard_html.replace(
+        "intensive.html", "https://atpp-intensiva.streamlit.app/?page=intensive"
+    )
     main_logo_uri = "data:image/png;base64," + base64.b64encode(ATPP_MAIN_LOGO_FILE.read_bytes()).decode("ascii")
     intensive_logo_uri = "data:image/png;base64," + base64.b64encode(ATPP_INTENSIVE_LOGO_FILE.read_bytes()).decode("ascii")
     dashboard_html = dashboard_html.replace("__ATPP_MAIN_LOGO_DATA_URI__", main_logo_uri).replace("__ATPP_INTENSIVE_LOGO_DATA_URI__", intensive_logo_uri)
@@ -585,4 +588,4 @@ page = st.query_params.get("page", "dashboard")
 if page == "intensive":
     render_intensive()
 else:
-    render_dashboard(st.query_params.get("section", "dashboard"))
+    render_main_dashboard()
