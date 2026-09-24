@@ -398,7 +398,7 @@ def render_intensive() -> None:
   .topbar { display: block !important; }
   #atpp { display: none !important; }
   #intensive { display: block !important; }
-  .topbar .nav { display: none !important; }
+  .topbar .nav { display: flex !important; }
   .topbar .mobile-toggle, .topbar .demo { display: none !important; }
   .topbar .brand { pointer-events: none; }
   html, body { min-height: 0 !important; height: auto !important; overflow: hidden !important; }
@@ -425,6 +425,11 @@ def render_intensive() -> None:
 <script>
 (function () {
   document.title = 'ATpp Intensive — Fases y talleres intensivos';
+  var nav = document.querySelector('.topbar .nav');
+  if (nav) {
+    nav.innerHTML = '<a class="home-link" target="_parent" href="https://atpp-intensiva.streamlit.app/?page=dashboard">← ATpp General</a>';
+    nav.setAttribute('aria-label', 'Navegación principal');
+  }
 })();
 </script>
 """
@@ -447,38 +452,10 @@ def render_intensive() -> None:
             height: 2500px !important;
             border: 0 !important;
           }
-          .intensive-streamlit-nav {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            min-height: 58px;
-            padding: 8px 18px;
-            margin: -1rem 0 0.5rem;
-            border-bottom: 1px solid #dfe7ee;
-            background: #fff;
-            color: #0A2F5E;
-            font: 700 15px/1.2 Inter, Arial, sans-serif;
-          }
-          .intensive-streamlit-nav a {
-            display: inline-flex;
-            align-items: center;
-            padding: 9px 15px;
-            border-radius: 9px;
-            background: #0A2F5E;
-            color: #fff !important;
-            text-decoration: none !important;
-          }
         </style>
-        <nav class="intensive-streamlit-nav" aria-label="Navegación de ATpp Intensive">
-          <span><img src="data:image/png;base64,""" + base64.b64encode(ATPP_INTENSIVE_LOGO_FILE.read_bytes()).decode("ascii") + """" alt="ATpp Intensive" style="height:42px;width:auto;object-fit:contain;"></span>
-          <span>Fases y talleres intensivos</span>
-        </nav>
         """,
         unsafe_allow_html=True,
     )
-    st.button("← Volver a ATpp General", key="intensive-back", on_click=navegar,
-              args=("dashboard", "dashboard"))
     components.html(site_html, height=2500, scrolling=False)
 
 
@@ -546,7 +523,7 @@ def render_main_dashboard() -> None:
             link = document.createElement('a');
             link.id = 'atpp-intensive-top-link';
             link.href = intensiveUrl;
-            link.target = '_top';
+            link.target = '_parent';
             link.setAttribute('aria-label', 'Abrir ATpp Intensive');
             link.style.cssText = 'position:fixed;display:block;z-index:2147483647;background:transparent;text-decoration:none;';
             document.body.appendChild(link);
